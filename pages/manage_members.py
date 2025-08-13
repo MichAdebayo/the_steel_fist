@@ -6,9 +6,7 @@ from utils import add_member,select_course, add_course, delete_course, delete_me
 import pandas as pd
 import datetime
 from datetime import datetime
-from streamlit_datetime_range_picker import datetime_range_picker
 import streamlit as st
-from streamlit_date_picker import date_range_picker, PickerType, date_picker
 
 
 def member_list():
