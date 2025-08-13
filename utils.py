@@ -7,8 +7,8 @@ import pandas as pd
 import random
 
 
-def all_coach_info():
-    """Retrieve all coach information from the database."""
+def all_coach_info():  
+    """Retrieve all coaches information from the database."""
     try:
         with Session(engine) as session:
             stmt = select(Coaches)
