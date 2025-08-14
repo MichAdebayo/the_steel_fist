@@ -61,7 +61,7 @@ def display_coach_cards(coaches_df):
             <div class="coach-card">
                 <div style="display: flex; justify-content: space-between; align-items: start;">
                     <div>
-                        <h3 style="margin: 0; color: #ffffff; font-size: 1.3rem;">👨‍🏫 {coach['coach_name']}</h3>
+                        <h3 style="margin: 0; color: var(--text-high, #0F172A); font-size: 1.3rem;">👨‍🏫 {coach['coach_name']}</h3>
                         <p style="color: #6B7280; margin: 0.5rem 0; font-size: 0.9rem;">Coach ID: #{coach['coach_id']}</p>
                         <span style="background: {color}; color: white; padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.8rem; font-weight: 500;">
                             🎯 {specialty.title()}
@@ -94,7 +94,7 @@ if not st.session_state.df.empty:
         st.markdown("""
         <div style="background: white; padding: 1.5rem; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); text-align: center; margin: 1rem 0; height: 140px; display: flex; flex-direction: column; justify-content: center;">
             <div style="font-size: 2rem; margin-bottom: 1rem;">👨‍🏫</div>
-            <h4 style="color: #ffffff; margin: 0; font-size: 1.1rem; line-height: 1.2;">Total Coaches</h4>
+            <h4 style="color: var(--text-high, #0F172A); margin: 0; font-size: 1.1rem; line-height: 1.2;">Total Coaches</h4>
             <p style="color: #6B7280; margin: 0.5rem 0 0 0; font-size: 0.9rem; font-weight: 500;">{}</p>
         </div>
         """.format(str(total_coaches)), unsafe_allow_html=True)
@@ -107,7 +107,7 @@ if not st.session_state.df.empty:
         st.markdown("""
         <div style="background: white; padding: 1.5rem; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); text-align: center; margin: 1rem 0; height: 140px; display: flex; flex-direction: column; justify-content: center;">
             <div style="font-size: 2rem; margin-bottom: 1rem;">🎯</div>
-            <h4 style="color: #ffffff; margin: 0; font-size: 1.1rem; line-height: 1.2;">Specialties</h4>
+            <h4 style="color: var(--text-high, #0F172A); margin: 0; font-size: 1.1rem; line-height: 1.2;">Specialties</h4>
             <p style="color: #6B7280; margin: 0.5rem 0 0 0; font-size: 0.9rem; font-weight: 500;">{}</p>
         </div>
         """.format(str(specialties)), unsafe_allow_html=True)
@@ -120,7 +120,7 @@ if not st.session_state.df.empty:
         st.markdown("""
         <div style="background: white; padding: 1.5rem; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); text-align: center; margin: 1rem 0; height: 140px; display: flex; flex-direction: column; justify-content: center;">
             <div style="font-size: 2rem; margin-bottom: 1rem;">⭐</div>
-            <h4 style="color: #ffffff; margin: 0; font-size: 1.1rem; line-height: 1.2;">Popular Specialty</h4>
+            <h4 style="color: var(--text-high, #0F172A); margin: 0; font-size: 1.1rem; line-height: 1.2;">Popular Specialty</h4>
             <p style="color: #6B7280; margin: 0.5rem 0 0 0; font-size: 0.9rem; font-weight: 500;">{}</p>
         </div>
         """.format(most_common.title() if most_common != "N/A" else "N/A"), unsafe_allow_html=True)
@@ -129,7 +129,7 @@ if not st.session_state.df.empty:
         st.markdown("""
         <div style="background: white; padding: 1.5rem; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); text-align: center; margin: 1rem 0; height: 140px; display: flex; flex-direction: column; justify-content: center;">
             <div style="font-size: 2rem; margin-bottom: 1rem;">✅</div>
-            <h4 style="color: #ffffff; margin: 0; font-size: 1.1rem; line-height: 1.2;">System Status</h4>
+            <h4 style="color: var(--text-high, #0F172A); margin: 0; font-size: 1.1rem; line-height: 1.2;">System Status</h4>
             <p style="color: #6B7280; margin: 0.5rem 0 0 0; font-size: 0.9rem; font-weight: 500;">Active</p>
         </div>
         """, unsafe_allow_html=True)

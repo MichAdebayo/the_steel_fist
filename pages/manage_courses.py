@@ -148,7 +148,7 @@ def display_course_cards(courses_df):
             <div style="background: white; padding: 1.5rem; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); margin: 1rem 0;">
                 <div style="display: flex; justify-content: space-between; align-items: start;">
                     <div style="flex: 1;">
-                        <h3 style="margin: 0; color: #ffffff; font-size: 1.2rem;">🏋️ {course['course_name']}</h3>
+                        <h3 style="margin: 0; color: var(--text-high, #0F172A); font-size: 1.2rem;">🏋️ {course['course_name']}</h3>
                         <p style="color: #6B7280; margin: 0.3rem 0; font-size: 0.9rem;">👨‍🏫 Coach: {course['coach_name']}</p>
                         <p style="color: #6B7280; margin: 0.3rem 0; font-size: 0.9rem;">🏷️ Specialty: {course['coach_specialty']}</p>
                         <p style="color: #6B7280; margin: 0.3rem 0; font-size: 0.9rem;">📅 {formatted_date}</p>

@@ -2,6 +2,7 @@
 import streamlit as st
 from init_db import engine
 from sqlmodel import Session, select, func, text
+from sqlalchemy import cast, String, literal_column
 from model import Members, Coaches, Accesscards, Registrations, Courses
 from utils import add_member, select_course, add_course, delete_course, delete_member, update_members
 import pandas as pd
@@ -14,45 +15,43 @@ import plotly.graph_objects as go
 apply_custom_css()
 
 def member_list():
-    """Get enhanced member list with additional statistics"""
-    with Session(engine) as session:
-        try:
-            # Use direct SQL query to ensure we get the right data
-            results = session.execute(text("SELECT * FROM members")).fetchall()
-            
+    """Return DataFrame of members with aggregated registration counts.
+
+    This version performs a single grouped aggregation instead of an N+1 loop.
+    Columns: member_id, member_name, email, access_card_id, total_registrations, status
+    """
+    # Local (re)import inside function to minimize any circular import edge cases
+    from model import Members, Registrations  # type: ignore
+    try:
+        with Session(engine) as session:
+            # Build a dict of registration counts keyed by member_id (string in Registrations model)
+            # Perform grouped aggregation. Use func.count() labeled for clarity.
+            # Perform grouped aggregation with an explicit cast so typing & SQL both align
+            reg_rows = session.exec(
+                select(
+                    cast(Registrations.member_id, String),
+                    func.count(literal_column('*'))
+                ).group_by(cast(Registrations.member_id, String))
+            ).all()
+            # reg_rows is list of tuples (member_id, reg_count)
+            reg_counts = {str(member_id): reg_count for member_id, reg_count in reg_rows}
+
+            members = session.exec(select(Members)).all()
             data = []
-            for row in results:
-                # Get member data safely
-                member_id = row[0] if len(row) > 0 else None
-                member_name = row[1] if len(row) > 1 else "Unknown"
-                email = row[2] if len(row) > 2 else "No email"
-                access_card_id = row[3] if len(row) > 3 else None
-                
-                # Count member's registrations
-                reg_count = 0
-                try:
-                    reg_result = session.execute(text(f"SELECT COUNT(*) FROM registrations WHERE member_id = '{member_id}'")).fetchone()
-                    reg_count = reg_result[0] if reg_result else 0
-                except:
-                    reg_count = 0
-                
+            for m in members:
+                reg_total = reg_counts.get(str(m.member_id), 0)
                 data.append({
-                    'member_id': member_id,
-                    'member_name': member_name,
-                    'email': email,
-                    'access_card_id': access_card_id,
-                    'total_registrations': reg_count,
-                    'status': 'Active' if reg_count > 0 else 'Inactive'
+                    'member_id': m.member_id,
+                    'member_name': m.member_name,
+                    'email': m.email,
+                    'access_card_id': m.access_card_id,
+                    'total_registrations': reg_total,
+                    'status': 'Active' if reg_total > 0 else 'Inactive'
                 })
-            
-            df = pd.DataFrame(data)
-            print(f"DEBUG: Retrieved {len(df)} members with columns: {df.columns.tolist()}")
-            return df
-            
-        except Exception as e:
-            print(f"ERROR in member_list: {e}")
-            # Return empty DataFrame with correct structure
-            return pd.DataFrame(columns=['member_id', 'member_name', 'email', 'access_card_id', 'total_registrations', 'status'])
+            return pd.DataFrame(data)
+    except Exception as e:
+        print(f"ERROR member_list(): {e}")
+        return pd.DataFrame(columns=['member_id', 'member_name', 'email', 'access_card_id', 'total_registrations', 'status'])
 
 def create_member_activity_chart(members_df):
     """Create a chart showing member activity distribution"""
@@ -166,9 +165,17 @@ st.markdown(create_welcome_card(
     "Admin"
 ), unsafe_allow_html=True)
 
-# Initialize session state for member list
-if "df" not in st.session_state:
-    st.session_state.df = member_list()
+# Initialize / refresh member list
+# Previously this only set df if missing. Because other pages (e.g., manage_coaches) also
+# use the generic key 'df', navigating from coaches -> members left coach columns in place,
+# triggering "Missing columns" errors. We now always refresh with the members dataset.
+st.session_state.df = member_list()
+
+# If for any reason required columns are still missing (e.g., empty DB), ensure they exist
+required_columns = ['member_id', 'member_name', 'email', 'access_card_id', 'total_registrations', 'status']
+for col in required_columns:
+    if col not in st.session_state.df.columns:
+        st.session_state.df[col] = []
 
 # Quick stats
 st.markdown(create_section_header("📊 Member Overview", "👥", "Current membership statistics and activity"), unsafe_allow_html=True)
@@ -181,7 +188,7 @@ if not st.session_state.df.empty:
         st.markdown("""
         <div style="background: white; padding: 1.5rem; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); text-align: center; margin: 1rem 0; height: 140px; display: flex; flex-direction: column; justify-content: center;">
             <div style="font-size: 2rem; margin-bottom: 1rem;">👥</div>
-            <h4 style="color: #ffffff; margin: 0; font-size: 1.1rem; line-height: 1.2;">Total Members</h4>
+            <h4 style="color: var(--text-high, #0F172A); margin: 0; font-size: 1.1rem; line-height: 1.2;">Total Members</h4>
             <p style="color: #6B7280; margin: 0.5rem 0 0 0; font-size: 0.9rem; font-weight: 500;">{}</p>
         </div>
         """.format(str(total_members)), unsafe_allow_html=True)
@@ -194,7 +201,7 @@ if not st.session_state.df.empty:
         st.markdown("""
         <div style="background: white; padding: 1.5rem; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); text-align: center; margin: 1rem 0; height: 140px; display: flex; flex-direction: column; justify-content: center;">
             <div style="font-size: 2rem; margin-bottom: 1rem;">🟢</div>
-            <h4 style="color: #ffffff; margin: 0; font-size: 1.1rem; line-height: 1.2;">Active Members</h4>
+            <h4 style="color: var(--text-high, #0F172A); margin: 0; font-size: 1.1rem; line-height: 1.2;">Active Members</h4>
             <p style="color: #6B7280; margin: 0.5rem 0 0 0; font-size: 0.9rem; font-weight: 500;">{}</p>
         </div>
         """.format(str(active_members)), unsafe_allow_html=True)
@@ -207,7 +214,7 @@ if not st.session_state.df.empty:
         st.markdown("""
         <div style="background: white; padding: 1.5rem; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); text-align: center; margin: 1rem 0; height: 140px; display: flex; flex-direction: column; justify-content: center;">
             <div style="font-size: 2rem; margin-bottom: 1rem;">📊</div>
-            <h4 style="color: #ffffff; margin: 0; font-size: 1.1rem; line-height: 1.2;">Avg Registrations</h4>
+            <h4 style="color: var(--text-high, #0F172A); margin: 0; font-size: 1.1rem; line-height: 1.2;">Avg Registrations</h4>
             <p style="color: #6B7280; margin: 0.5rem 0 0 0; font-size: 0.9rem; font-weight: 500;">{}</p>
         </div>
         """.format(f"{avg_registrations:.1f}"), unsafe_allow_html=True)
@@ -221,7 +228,7 @@ if not st.session_state.df.empty:
         st.markdown("""
         <div style="background: white; padding: 1.5rem; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); text-align: center; margin: 1rem 0; height: 140px; display: flex; flex-direction: column; justify-content: center;">
             <div style="font-size: 2rem; margin-bottom: 1rem;">⚡</div>
-            <h4 style="color: #ffffff; margin: 0; font-size: 1.1rem; line-height: 1.2;">Engagement Rate</h4>
+            <h4 style="color: var(--text-high, #0F172A); margin: 0; font-size: 1.1rem; line-height: 1.2;">Engagement Rate</h4>
             <p style="color: #6B7280; margin: 0.5rem 0 0 0; font-size: 0.9rem; font-weight: 500;">{}</p>
         </div>
         """.format(f"{engagement_rate:.1f}%"), unsafe_allow_html=True)

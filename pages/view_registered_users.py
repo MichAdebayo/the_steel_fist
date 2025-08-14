@@ -50,8 +50,8 @@ st.markdown(create_welcome_card(
 # Get registration data
 registrations_df = get_registration_data()
 
-# Quick stats
-st.markdown(create_section_header("📊 Registration Statistics", "📋", "Current registration metrics and insights"), unsafe_allow_html=True)
+# Quick stats (icons removed)
+st.markdown(create_section_header("Registration Statistics", "", "Current registration metrics and insights"), unsafe_allow_html=True)
 
 if not registrations_df.empty:
     col1, col2, col3, col4 = st.columns(4)
@@ -59,40 +59,36 @@ if not registrations_df.empty:
     with col1:
         total_registrations = len(registrations_df)
         st.markdown("""
-        <div style="background: white; padding: 1.5rem; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); text-align: center; margin: 1rem 0; height: 140px; display: flex; flex-direction: column; justify-content: center;">
-            <div style="font-size: 2rem; margin-bottom: 1rem;">📋</div>
-            <h4 style="color: #ffffff; margin: 0; font-size: 1.1rem; line-height: 1.2;">Total Registrations</h4>
-            <p style="color: #6B7280; margin: 0.5rem 0 0 0; font-size: 0.9rem; font-weight: 500;">{}</p>
+        <div style="background: white; padding: 1.75rem; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); text-align: center; margin: 1rem 0; height: 160px; display: flex; flex-direction: column; justify-content: flex-start;">
+            <h4 style="color: var(--brand-primary); margin: 0 0 0.75rem 0; font-size: 1.4rem; line-height: 1.2; font-weight: 700;">Total Registrations</h4>
+            <p style="color: var(--brand-primary); margin: 0; font-size: 1.6rem; font-weight: 700;">{}</p>
         </div>
         """.format(str(total_registrations)), unsafe_allow_html=True)
     
     with col2:
         unique_members = registrations_df['member_name'].nunique()
         st.markdown("""
-        <div style="background: white; padding: 1.5rem; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); text-align: center; margin: 1rem 0; height: 140px; display: flex; flex-direction: column; justify-content: center;">
-            <div style="font-size: 2rem; margin-bottom: 1rem;">👥</div>
-            <h4 style="color: #ffffff; margin: 0; font-size: 1.1rem; line-height: 1.2;">Active Members</h4>
-            <p style="color: #6B7280; margin: 0.5rem 0 0 0; font-size: 0.9rem; font-weight: 500;">{}</p>
+        <div style="background: white; padding: 1.75rem; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); text-align: center; margin: 1rem 0; height: 160px; display: flex; flex-direction: column; justify-content: flex-start;">
+            <h4 style="color: var(--brand-primary); margin: 0 0 0.75rem 0; font-size: 1.4rem; line-height: 1.2; font-weight: 700;">Active Members</h4>
+            <p style="color: var(--brand-primary); margin: 0; font-size: 1.6rem; font-weight: 700;">{}</p>
         </div>
         """.format(str(unique_members)), unsafe_allow_html=True)
     
     with col3:
         unique_courses = registrations_df['course_name'].nunique()
         st.markdown("""
-        <div style="background: white; padding: 1.5rem; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); text-align: center; margin: 1rem 0; height: 140px; display: flex; flex-direction: column; justify-content: center;">
-            <div style="font-size: 2rem; margin-bottom: 1rem;">🎯</div>
-            <h4 style="color: #ffffff; margin: 0; font-size: 1.1rem; line-height: 1.2;">Courses with Registrations</h4>
-            <p style="color: #6B7280; margin: 0.5rem 0 0 0; font-size: 0.9rem; font-weight: 500;">{}</p>
+        <div style="background: white; padding: 1.75rem; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); text-align: center; margin: 1rem 0; height: 160px; display: flex; flex-direction: column; justify-content: flex-start;">
+            <h4 style="color: var(--brand-primary); margin: 0 0 0.75rem 0; font-size: 1.4rem; line-height: 1.2; font-weight: 700;">Courses with Registrations</h4>
+            <p style="color: var(--brand-primary); margin: 0; font-size: 1.6rem; font-weight: 700;">{}</p>
         </div>
         """.format(str(unique_courses)), unsafe_allow_html=True)
     
     with col4:
         avg_per_member = total_registrations / unique_members if unique_members > 0 else 0
         st.markdown("""
-        <div style="background: white; padding: 1.5rem; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); text-align: center; margin: 1rem 0; height: 140px; display: flex; flex-direction: column; justify-content: center;">
-            <div style="font-size: 2rem; margin-bottom: 1rem;">📊</div>
-            <h4 style="color: #ffffff; margin: 0; font-size: 1.1rem; line-height: 1.2;">Avg per Member</h4>
-            <p style="color: #6B7280; margin: 0.5rem 0 0 0; font-size: 0.9rem; font-weight: 500;">{}</p>
+        <div style="background: white; padding: 1.75rem; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); text-align: center; margin: 1rem 0; height: 160px; display: flex; flex-direction: column; justify-content: flex-start;">
+            <h4 style="color: var(--brand-primary); margin: 0 0 0.75rem 0; font-size: 1.4rem; line-height: 1.2; font-weight: 700;">Avg per Member</h4>
+            <p style="color: var(--brand-primary); margin: 0; font-size: 1.6rem; font-weight: 700;">{}</p>
         </div>
         """.format(f"{avg_per_member:.1f}"), unsafe_allow_html=True)
     
@@ -108,7 +104,8 @@ if not registrations_df.empty:
                 y=course_popularity.index,
                 orientation='h',
                 title="Most Popular Courses",
-                labels={'x': 'Registrations', 'y': 'Course Name'}
+                labels={'x': 'Registrations', 'y': 'Course Name'},
+                color_discrete_sequence=['#EF233C']
             )
             fig1.update_layout(
                 plot_bgcolor='rgba(0,0,0,0)',
@@ -129,7 +126,10 @@ if not registrations_df.empty:
                 fig2 = px.line(
                     x=daily_registrations.index,
                     y=daily_registrations.values,
-                    title="Daily Registration Trend"
+                    title="Daily Registration Trend",
+                    labels={'x': 'Date', 'y': 'Count'},
+                    markers=True,
+                    color_discrete_sequence=['#EF233C']
                 )
                 fig2.update_layout(
                     plot_bgcolor='rgba(0,0,0,0)',
@@ -141,7 +141,8 @@ if not registrations_df.empty:
                 st.plotly_chart(fig2, use_container_width=True)
     
     # Detailed registrations table
-    st.markdown(create_section_header("📋 All Registrations", "📊", "Complete list of course registrations"), unsafe_allow_html=True)
+    # Detailed registrations table (icons removed)
+    st.markdown(create_section_header("All Registrations", "", "Complete list of course registrations"), unsafe_allow_html=True)
     
     # Search and filter
     col1, col2 = st.columns(2)
