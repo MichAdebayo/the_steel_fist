@@ -97,11 +97,19 @@ def login():
         </div>
         """, unsafe_allow_html=True)
 
+def handle_logout():
+    """Function to handle logout in sidebar"""
+    if st.button("🚪 Logout", use_container_width=True):
+        # Clear all session state
+        for key in list(st.session_state.keys()):
+            del st.session_state[key]
+        st.session_state["role"] = None
+        st.cache_data.clear()
+        st.rerun()
+
 def logout():
-    """Enhanced Logout Functionality"""
-    st.session_state["role"] = None
-    st.success("👋 Successfully logged out. See you next time!")
-    st.rerun()
+    """This should not be called directly anymore"""
+    pass
 
 # Main app session state
 role = st.session_state["role"]
@@ -140,14 +148,13 @@ elif st.session_state["role"] == "Member":
     """, unsafe_allow_html=True)
     
     # Define pages for members
-    logout_page = st.Page(logout, title="🚪 Logout", icon=":material/logout:")
     settings = st.Page("pages/settings.py", title="⚙️ Settings", icon=":material/settings:")
     member_registration = st.Page("app_members.py", title="📝 Course Registration", icon="👤", default=True)
     course_register = st.Page("pages/course_registration.py", title="🎯 Browse Courses", icon="📚")
     
-    # Group member pages
-    account_pages = [logout_page, settings]
+    # Group member pages (no logout page in navigation)
     member_pages = [member_registration, course_register]
+    account_pages = [settings]
     
     # Modern sidebar for members
     with st.sidebar:
@@ -178,6 +185,11 @@ elif st.session_state["role"] == "Member":
             </div>
         </div>
         """, unsafe_allow_html=True)
+        
+        st.markdown("---")
+        
+        # Add logout button in sidebar
+        handle_logout()
     
     # Navigation for members
     pg = st.navigation(
@@ -218,15 +230,14 @@ elif st.session_state["role"] == "Admin":
     """, unsafe_allow_html=True)
     
     # Define pages for admins
-    logout_page = st.Page(logout, title="🚪 Logout", icon=":material/logout:")
     settings = st.Page("pages/settings.py", title="⚙️ Settings", icon=":material/settings:")
     manage_coaches = st.Page("pages/manage_coaches.py", title="👨‍🏫 Manage Coaches", icon="🏋️", default=True)
     manage_courses = st.Page("pages/manage_courses.py", title="📚 Manage Courses", icon="📚")
     manage_members = st.Page("pages/manage_members.py", title="👥 Manage Members", icon="👥")
     view_registered_users = st.Page("pages/view_registered_users.py", title="📋 View Registrations", icon="📋")
     
-    # Group admin pages
-    account_pages = [logout_page, settings]
+    # Group admin pages (no logout page in navigation)
+    account_pages = [settings]
     admin_pages = [manage_coaches, manage_courses, manage_members, view_registered_users]
     
     # Modern sidebar for admins
@@ -277,6 +288,11 @@ elif st.session_state["role"] == "Admin":
             </div>
         </div>
         """, unsafe_allow_html=True)
+        
+        st.markdown("---")
+        
+        # Add logout button in sidebar
+        handle_logout()
     
     # Navigation for admins
     pg = st.navigation(
