@@ -57,9 +57,9 @@ def display_coach_cards(coaches_df):
             <div style="background: rgba(45, 45, 45, 0.95); padding: 1.5rem; border-radius: 16px; box-shadow: 0 8px 32px rgba(0,0,0,0.3); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); margin: 1rem 0; transition: transform 0.3s ease, box-shadow 0.3s ease; color:#ffffff;">
                 <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:1rem;">
                     <div style="flex:1;">
-                            <h3 style="margin:0 0 .35rem 0; color:#ffffff; font-size:1.3rem; font-weight:600; letter-spacing:.5px;">{coach['coach_name']}</h3>
-                        <p style="color:#cccccc; margin:.25rem 0; font-size:.9rem;">🏷️ <strong>Specialty:</strong> {specialty.title()}</p>
-                        <p style="color:#cccccc; margin:.25rem 0; font-size:.9rem;">🆔 <strong>ID:</strong> #{coach['coach_id']}</p>
+                            <h3 style="margin:0 0 .35rem 0; color:#ffffff; font-size:1.4rem; font-weight:600; letter-spacing:.5px;">{coach['coach_name']}</h3>
+                        <p style="color:#cccccc; margin:.25rem 0; font-size:1rem;">🏷️ <strong>Specialty:</strong> {specialty.title()}</p>
+                        <p style="color:#cccccc; margin:.25rem 0; font-size:1rem;">🆔 <strong>ID:</strong> #{coach['coach_id']}</p>
                         <div style="margin-top:.75rem; display:flex; gap:.5rem; flex-wrap:wrap;">
                             <span style="background:{color}; color:#ffffff; padding:0.25rem 0.65rem; border-radius:16px; font-size:0.75rem; font-weight:500;">{specialty.title()}</span>
                         </div>
