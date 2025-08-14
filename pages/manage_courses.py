@@ -49,11 +49,11 @@ def course_list():
         return pd.DataFrame(data)
 
 def create_course_analytics(courses_df):
-    """Create analytics charts for courses"""
+    """Create analytics charts for courses (updated sizes & axis labels)."""
     if courses_df.empty:
         return None, None
-    
-    # Course popularity chart
+
+    # Course popularity chart (larger, custom axis titles)
     fig1 = px.bar(
         courses_df.sort_values('total_participants', ascending=True).tail(10),
         x='total_participants',
@@ -67,11 +67,13 @@ def create_course_analytics(courses_df):
         plot_bgcolor='rgba(0,0,0,0)',
         paper_bgcolor='rgba(0,0,0,0)',
         font_family="Inter",
-        title_font_size=16,
-        height=300
+        title_font_size=18,
+        height=430,
+        xaxis_title="Total participants",
+        yaxis_title="Course name"
     )
-    
-    # Course status distribution
+
+    # Course status distribution (larger pie chart)
     status_counts = courses_df['status'].value_counts()
     fig2 = px.pie(
         values=status_counts.values,
@@ -83,10 +85,10 @@ def create_course_analytics(courses_df):
         plot_bgcolor='rgba(0,0,0,0)',
         paper_bgcolor='rgba(0,0,0,0)',
         font_family="Inter",
-        title_font_size=16,
-        height=300
+        title_font_size=18,
+        height=430
     )
-    
+
     return fig1, fig2
 
 def display_course_cards(courses_df):
@@ -129,8 +131,6 @@ def display_course_cards(courses_df):
     for idx, course in page_courses.iterrows():
         with cols[idx % 2]:
             status_color = "#10B981" if course['status'] == 'Active' else "#F59E0B"
-            status_icon = "🟢" if course['status'] == 'Active' else "🟡"
-            
             # Format date and time
             try:
                 if course['time_plan']:
@@ -143,28 +143,30 @@ def display_course_cards(courses_df):
             except:
                 formatted_date = str(course['time_plan'])
                 formatted_time = "Time TBD"
-            
+
+            # Dark glass style with icons & enlarged title + status dot
+            status_icon = "🟢" if course['status'] == 'Active' else "⚪"
             st.markdown(f"""
-            <div style="background: white; padding: 1.5rem; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); margin: 1rem 0;">
-                <div style="display: flex; justify-content: space-between; align-items: start;">
+            <div style="background: rgba(45, 45, 45, 0.95); padding: 1.5rem; border-radius: 16px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); margin: 1rem 0; transition: transform 0.3s ease, box-shadow 0.3s ease; color: #ffffff;">
+                <div style="display: flex; justify-content: space-between; align-items: start; gap:1rem;">
                     <div style="flex: 1;">
-                        <h3 style="margin: 0; color: var(--text-high, #0F172A); font-size: 1.2rem;">🏋️ {course['course_name']}</h3>
-                        <p style="color: #6B7280; margin: 0.3rem 0; font-size: 0.9rem;">👨‍🏫 Coach: {course['coach_name']}</p>
-                        <p style="color: #6B7280; margin: 0.3rem 0; font-size: 0.9rem;">🏷️ Specialty: {course['coach_specialty']}</p>
-                        <p style="color: #6B7280; margin: 0.3rem 0; font-size: 0.9rem;">📅 {formatted_date}</p>
-                        <p style="color: #6B7280; margin: 0.3rem 0; font-size: 0.9rem;">⏰ {formatted_time}</p>
-                        <p style="color: #6B7280; margin: 0.3rem 0; font-size: 0.9rem;">👥 Max Capacity: {course['max_capacity']}</p>
-                        <p style="color: #6B7280; margin: 0.3rem 0; font-size: 0.9rem;">🆔 Course ID: #{course['course_id']}</p>
-                        <div style="margin-top: 1rem;">
-                            <span style="background: {status_color}; color: white; padding: 0.2rem 0.6rem; border-radius: 15px; font-size: 0.8rem; font-weight: 500;">
-                                {status_icon} {course['status']}
+                        <h3 style="margin: 0 0 .35rem 0; color: #ffffff; font-size: 1.5rem; font-weight:600; letter-spacing:.5px;">{course['course_name']}</h3>
+                        <p style="color: #cccccc; margin: 0.25rem 0; font-size: 0.9rem;">👨‍🏫 <strong>Coach:</strong> {course['coach_name']}</p>
+                        <p style="color: #cccccc; margin: 0.25rem 0; font-size: 0.9rem;">🏷️ <strong>Specialty:</strong> {course['coach_specialty']}</p>
+                        <p style="color: #cccccc; margin: 0.25rem 0; font-size: 0.9rem;">📅 <strong>Date:</strong> {formatted_date}</p>
+                        <p style="color: #cccccc; margin: 0.25rem 0; font-size: 0.9rem;">⏰ <strong>Time:</strong> {formatted_time}</p>
+                        <p style="color: #cccccc; margin: 0.25rem 0; font-size: 0.9rem;">👥 <strong>Capacity:</strong> {course['max_capacity']}</p>
+                        <p style="color: #cccccc; margin: 0.25rem 0; font-size: 0.9rem;">🆔 <strong>ID:</strong> #{course['course_id']}</p>
+                        <div style="margin-top: .75rem; display:flex; flex-wrap:wrap; gap:.5rem; align-items:center;">
+                            <span style="background: {status_color}; color: white; padding: 0.25rem 0.65rem; border-radius: 16px; font-size: 0.75rem; font-weight: 500; display:inline-flex; align-items:center; gap:.35rem;">
+                                <span>{status_icon}</span> {course['status']}
                             </span>
-                            <span style="background: #F3F4F6; color: #374151; padding: 0.2rem 0.6rem; border-radius: 15px; font-size: 0.8rem; margin-left: 0.5rem;">
-                                👥 {course['total_participants']} participants
+                            <span style="background: rgba(75, 75, 75, 0.8); color: #cccccc; padding: 0.25rem 0.65rem; border-radius: 16px; font-size: 0.75rem;">
+                                {course['total_participants']} participants
                             </span>
                         </div>
                     </div>
-                    <div style="font-size: 2rem; opacity: 0.3;">🎯</div>
+                    <div style="font-size: 2rem; opacity: 0.25;">🏋️</div>
                 </div>
             </div>
             """, unsafe_allow_html=True)
@@ -186,54 +188,43 @@ st.markdown(create_welcome_card(
 if "courses_df" not in st.session_state:
     st.session_state.courses_df = course_list()
 
-# Quick stats
-st.markdown(create_section_header("📊 Course Overview", "🎯", "Current course statistics and performance"), unsafe_allow_html=True)
+st.markdown("### Course Overview")
 
+# Rebuild metrics block cleanly
 if not st.session_state.courses_df.empty:
     col1, col2, col3, col4 = st.columns(4)
-    
+
+    card_style = "background:white; padding:1rem 1rem; border-radius:16px; box-shadow:0 2px 6px rgba(0,0,0,0.05); margin:1rem 0; height:110px; display:flex; align-items:center;"
+    inner_style = "display:flex; justify-content:space-between; width:100%; align-items:baseline; gap:.5rem;"
+    title_style = "color:#0F172A; margin:0; font-size:1.0rem; font-weight:700;"
+    value_style = "color:#374151; font-size:1.3rem; font-weight:600;"
+
     with col1:
         total_courses = len(st.session_state.courses_df)
-        st.markdown("""
-        <div style="background: rgba(45, 45, 45, 0.95); padding: 1.5rem; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3); text-align: center; margin: 1rem 0; height: 140px; display: flex; flex-direction: column; justify-content: center;">
-            <div style="font-size: 2rem; margin-bottom: 1rem;">🎯</div>
-            <h4 style="color: #ffffff; margin: 0; font-size: 1.1rem; line-height: 1.2;">Total Courses</h4>
-            <p style="color: #cccccc; margin: 0.5rem 0 0 0; font-size: 0.9rem; font-weight: 500;">{}</p>
-        </div>
-        """.format(str(total_courses)), unsafe_allow_html=True)
-    
+        st.markdown(f"""
+        <div style=\"{card_style}\">\n  <div style=\"{inner_style}\">\n    <h4 style=\"{title_style}\">Total Courses</h4>\n    <span style=\"{value_style}\">{total_courses}</span>\n  </div>\n</div>
+        """, unsafe_allow_html=True)
+
     with col2:
         active_courses = len(st.session_state.courses_df[st.session_state.courses_df['status'] == 'Active'])
-        st.markdown("""
-        <div style="background: rgba(45, 45, 45, 0.95); padding: 1.5rem; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3); text-align: center; margin: 1rem 0; height: 140px; display: flex; flex-direction: column; justify-content: center;">
-            <div style="font-size: 2rem; margin-bottom: 1rem;">🟢</div>
-            <h4 style="color: #ffffff; margin: 0; font-size: 1.1rem; line-height: 1.2;">Active Courses</h4>
-            <p style="color: #cccccc; margin: 0.5rem 0 0 0; font-size: 0.9rem; font-weight: 500;">{}</p>
-        </div>
-        """.format(str(active_courses)), unsafe_allow_html=True)
-    
+        st.markdown(f"""
+        <div style=\"{card_style}\">\n  <div style=\"{inner_style}\">\n    <h4 style=\"{title_style}\">Active Courses</h4>\n    <span style=\"{value_style}\">{active_courses}</span>\n  </div>\n</div>
+        """, unsafe_allow_html=True)
+
     with col3:
         total_participants = st.session_state.courses_df['total_participants'].sum()
-        st.markdown("""
-        <div style="background: rgba(45, 45, 45, 0.95); padding: 1.5rem; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3); text-align: center; margin: 1rem 0; height: 140px; display: flex; flex-direction: column; justify-content: center;">
-            <div style="font-size: 2rem; margin-bottom: 1rem;">👥</div>
-            <h4 style="color: #ffffff; margin: 0; font-size: 1.1rem; line-height: 1.2;">Total Participants</h4>
-            <p style="color: #cccccc; margin: 0.5rem 0 0 0; font-size: 0.9rem; font-weight: 500;">{}</p>
-        </div>
-        """.format(str(total_participants)), unsafe_allow_html=True)
-    
+        st.markdown(f"""
+        <div style=\"{card_style}\">\n  <div style=\"{inner_style}\">\n    <h4 style=\"{title_style}\">Total Participants</h4>\n    <span style=\"{value_style}\">{total_participants}</span>\n  </div>\n</div>
+        """, unsafe_allow_html=True)
+
     with col4:
         avg_participants = st.session_state.courses_df['total_participants'].mean()
-        st.markdown("""
-        <div style="background: rgba(45, 45, 45, 0.95); padding: 1.5rem; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3); text-align: center; margin: 1rem 0; height: 140px; display: flex; flex-direction: column; justify-content: center;">
-            <div style="font-size: 2rem; margin-bottom: 1rem;">📊</div>
-            <h4 style="color: #ffffff; margin: 0; font-size: 1.1rem; line-height: 1.2;">Avg Per Course</h4>
-            <p style="color: #cccccc; margin: 0.5rem 0 0 0; font-size: 0.9rem; font-weight: 500;">{}</p>
-        </div>
-        """.format(f"{avg_participants:.1f}"), unsafe_allow_html=True)
+        st.markdown(f"""
+        <div style=\"{card_style}\">\n  <div style=\"{inner_style}\">\n    <h4 style=\"{title_style}\">Avg Per Course</h4>\n    <span style=\"{value_style}\">{avg_participants:.1f}</span>\n  </div>\n</div>
+        """, unsafe_allow_html=True)
     
     # Analytics charts
-    st.markdown("### 📈 Course Analytics")
+    st.markdown("### Course Analytics")
     chart1, chart2 = create_course_analytics(st.session_state.courses_df)
     
     col1, col2 = st.columns(2)
@@ -248,11 +239,11 @@ if not st.session_state.courses_df.empty:
     # Quick actions
     col1, col2 = st.columns([3, 1])
     with col2:
-        st.markdown("### 🔄 Quick Actions")
+        st.markdown("### Quick Actions")
         if st.button("📊 Refresh Data", use_container_width=True):
             st.session_state.courses_df = course_list()
             st.rerun()
-        
+
         if st.button("📤 Export Courses", use_container_width=True):
             st.download_button(
                 label="💾 Download CSV",
@@ -263,13 +254,13 @@ if not st.session_state.courses_df.empty:
             )
 
 # Course cards display
-st.markdown(create_section_header("🎯 Current Courses", "🏋️", "Browse and manage scheduled courses"), unsafe_allow_html=True)
+st.markdown("### Current Courses")
 display_course_cards(st.session_state.courses_df)
 
 st.markdown("---")
 
 # Management actions
-st.markdown(create_section_header("🛠️ Course Management Actions", "⚙️", "Schedule, modify, or remove courses from your system"), unsafe_allow_html=True)
+st.markdown("### Course Management Actions")
 
 # Action buttons
 col1, col2, col3 = st.columns(3)

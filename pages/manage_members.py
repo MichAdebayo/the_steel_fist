@@ -185,56 +185,50 @@ for col in required_columns:
         st.session_state.df[col] = []
 
 # Quick stats
-st.markdown(create_section_header("Member Overview", "", "Current membership statistics and activity"), unsafe_allow_html=True)
+st.markdown("### Member Overview")
 
 if not st.session_state.df.empty:
     col1, col2, col3, col4 = st.columns(4)
-    
+
+    card_style = "background:white; padding:1rem 1rem; border-radius:16px; box-shadow:0 2px 6px rgba(0,0,0,0.05); margin:1rem 0; height:110px; display:flex; align-items:center;"
+    inner_style = "display:flex; justify-content:space-between; width:100%; align-items:baseline; gap:.5rem;"
+    title_style = "color:#0F172A; margin:0; font-size:1.0rem; font-weight:700;"
+    value_style = "color:#374151; font-size:1.3rem; font-weight:600;"
+
     with col1:
         total_members = len(st.session_state.df)
-        st.markdown("""
-        <div style="background: white; padding: 1.75rem; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); text-align: center; margin: 1rem 0; height: 190px; display: flex; flex-direction: column; justify-content: space-between;">
-            <h4 style="color: var(--text-high, #0F172A); margin: 0; font-size: 1.4rem; line-height: 1.2; font-weight: 700;">Total Members</h4>
-            <p style="color: #6B7280; margin: 0; font-size: 1.6rem; font-weight: 600;">{}</p>
-        </div>
-        """.format(str(total_members)), unsafe_allow_html=True)
-    
+        st.markdown(f"""
+        <div style=\"{card_style}\">\n  <div style=\"{inner_style}\">\n    <h4 style=\"{title_style}\">Total Members</h4>\n    <span style=\"{value_style}\">{total_members}</span>\n  </div>\n</div>
+        """, unsafe_allow_html=True)
+
     with col2:
         if 'status' in st.session_state.df.columns:
             active_members = len(st.session_state.df[st.session_state.df['status'] == 'Active'])
         else:
             active_members = 0
-        st.markdown("""
-        <div style="background: white; padding: 1.75rem; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); text-align: center; margin: 1rem 0; height: 190px; display: flex; flex-direction: column; justify-content: space-between;">
-            <h4 style="color: var(--text-high, #0F172A); margin: 0; font-size: 1.4rem; line-height: 1.2; font-weight: 700;">Active Members</h4>
-            <p style="color: #6B7280; margin: 0; font-size: 1.6rem; font-weight: 600;">{}</p>
-        </div>
-        """.format(str(active_members)), unsafe_allow_html=True)
-    
+        st.markdown(f"""
+        <div style=\"{card_style}\">\n  <div style=\"{inner_style}\">\n    <h4 style=\"{title_style}\">Active Members</h4>\n    <span style=\"{value_style}\">{active_members}</span>\n  </div>\n</div>
+        """, unsafe_allow_html=True)
+
     with col3:
         if 'total_registrations' in st.session_state.df.columns:
             avg_registrations = st.session_state.df['total_registrations'].mean()
         else:
             avg_registrations = 0
-        st.markdown("""
-        <div style="background: white; padding: 1.75rem; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); text-align: center; margin: 1rem 0; height: 190px; display: flex; flex-direction: column; justify-content: space-between;">
-            <h4 style="color: var(--text-high, #0F172A); margin: 0; font-size: 1.4rem; line-height: 1.2; font-weight: 700;">Avg Registrations</h4>
-            <p style="color: #6B7280; margin: 0; font-size: 1.6rem; font-weight: 600;">{}</p>
-        </div>
-        """.format(f"{avg_registrations:.1f}"), unsafe_allow_html=True)
-    
+        st.markdown(f"""
+        <div style=\"{card_style}\">\n  <div style=\"{inner_style}\">\n    <h4 style=\"{title_style}\">Avg Registrations</h4>\n    <span style=\"{value_style}\">{avg_registrations:.1f}</span>\n  </div>\n</div>
+        """, unsafe_allow_html=True)
+
     with col4:
         if 'status' in st.session_state.df.columns:
             active_members = len(st.session_state.df[st.session_state.df['status'] == 'Active'])
         else:
             active_members = 0
+        total_members = len(st.session_state.df)
         engagement_rate = (active_members / total_members * 100) if total_members > 0 else 0
-        st.markdown("""
-        <div style="background: white; padding: 1.75rem; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); text-align: center; margin: 1rem 0; height: 190px; display: flex; flex-direction: column; justify-content: space-between;">
-            <h4 style="color: var(--text-high, #0F172A); margin: 0; font-size: 1.4rem; line-height: 1.2; font-weight: 700;">Engagement Rate</h4>
-            <p style="color: #6B7280; margin: 0; font-size: 1.6rem; font-weight: 600;">{}</p>
-        </div>
-        """.format(f"{engagement_rate:.1f}%"), unsafe_allow_html=True)
+        st.markdown(f"""
+        <div style=\"{card_style}\">\n  <div style=\"{inner_style}\">\n    <h4 style=\"{title_style}\">Engagement Rate</h4>\n    <span style=\"{value_style}\">{engagement_rate:.1f}%</span>\n  </div>\n</div>
+        """, unsafe_allow_html=True)
     
     # Charts and quick actions
     col1, col2 = st.columns([2, 1])
