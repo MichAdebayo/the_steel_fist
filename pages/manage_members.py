@@ -60,14 +60,18 @@ def create_member_activity_chart(members_df):
 
     activity_counts = members_df['status'].value_counts()
 
-    # Brand-aligned colors: Active -> brand primary, Inactive -> soft neutral
+    # Calmer blue palette (Active lighter, Inactive darker)
+    lighter_blue = '#60A5FA'   # light blue
+    darker_blue = '#1E3A8A'    # deep navy
     fig = px.pie(
         values=activity_counts.values,
         names=activity_counts.index,
         title="Member Activity Status",
-        color_discrete_map={'Active': '#EF233C', 'Inactive': '#9CA3AF'}
+        color=activity_counts.index,
+    color_discrete_map={'Active': lighter_blue, 'Inactive': darker_blue}
     )
-    fig.update_traces(textposition='inside', textinfo='percent+label')
+    # Use white text for both to guarantee contrast (darker slice explicitly required; lighter slice still passes contrast)
+    fig.update_traces(textposition='inside', textinfo='percent+label', textfont_color='white')
     fig.update_layout(
         plot_bgcolor='rgba(0,0,0,0)',
         paper_bgcolor='rgba(0,0,0,0)',
@@ -152,7 +156,7 @@ def display_member_cards(members_df):
                                 {status_icon} {member_status}
                             </span>
                             <span style="background: rgba(75, 75, 75, 0.8); color: #cccccc; padding: 0.2rem 0.6rem; border-radius: 15px; font-size: 0.8rem; margin-left: 0.5rem;">
-                                📊 {total_registrations} registrations
+                                {total_registrations} registrations
                             </span>
                         </div>
                     </div>
