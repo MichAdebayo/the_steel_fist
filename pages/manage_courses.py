@@ -158,13 +158,13 @@ def display_course_cards(courses_df):
             <div style="background: rgba(45, 45, 45, 0.95); padding: 1.5rem; border-radius: 16px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); margin: 1rem 0; transition: transform 0.3s ease, box-shadow 0.3s ease; color: #ffffff;">
                 <div style="display: flex; justify-content: space-between; align-items: start; gap:1rem;">
                     <div style="flex: 1;">
-                        <h3 style="margin: 0 0 .35rem 0; color: #ffffff; font-size: 1.5rem; font-weight:600; letter-spacing:.5px;">{course['course_name']}</h3>
-                        <p style="color: #cccccc; margin: 0.25rem 0; font-size: 0.9rem;">👨‍🏫 <strong>Coach:</strong> {course['coach_name']}</p>
-                        <p style="color: #cccccc; margin: 0.25rem 0; font-size: 0.9rem;">🏷️ <strong>Specialty:</strong> {course['coach_specialty']}</p>
-                        <p style="color: #cccccc; margin: 0.25rem 0; font-size: 0.9rem;">📅 <strong>Date:</strong> {formatted_date}</p>
-                        <p style="color: #cccccc; margin: 0.25rem 0; font-size: 0.9rem;">⏰ <strong>Time:</strong> {formatted_time}</p>
-                        <p style="color: #cccccc; margin: 0.25rem 0; font-size: 0.9rem;">👥 <strong>Capacity:</strong> {course['max_capacity']}</p>
-                        <p style="color: #cccccc; margin: 0.25rem 0; font-size: 0.9rem;">🆔 <strong>ID:</strong> #{course['course_id']}</p>
+                        <h3 style="margin: 0 0 .35rem 0; color: #ffffff; font-size: 1.4rem; font-weight:600; letter-spacing:.5px;">{course['course_name']}</h3>
+                        <p style="color: #cccccc; margin: 0.25rem 0; font-size: 1rem;">👨‍🏫 <strong>Coach:</strong> {course['coach_name']}</p>
+                        <p style="color: #cccccc; margin: 0.25rem 0; font-size: 1rem;">🏷️ <strong>Specialty:</strong> {course['coach_specialty']}</p>
+                        <p style="color: #cccccc; margin: 0.25rem 0; font-size: 1rem;">📅 <strong>Date:</strong> {formatted_date}</p>
+                        <p style="color: #cccccc; margin: 0.25rem 0; font-size: 1rem;">⏰ <strong>Time:</strong> {formatted_time}</p>
+                        <p style="color: #cccccc; margin: 0.25rem 0; font-size: 1rem;">👥 <strong>Capacity:</strong> {course['max_capacity']}</p>
+                        <p style="color: #cccccc; margin: 0.25rem 0; font-size: 1rem;">🆔 <strong>ID:</strong> #{course['course_id']}</p>
                         <div style="margin-top: .75rem; display:flex; flex-wrap:wrap; gap:.5rem; align-items:center;">
                             <span style="background: {status_color}; color: white; padding: 0.25rem 0.65rem; border-radius: 16px; font-size: 0.75rem; font-weight: 500; display:inline-flex; align-items:center; gap:.35rem;">
                                 <span>{status_icon}</span> {course['status']}
