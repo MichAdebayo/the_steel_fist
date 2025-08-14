@@ -93,9 +93,9 @@ def display_course_cards(courses_df):
             <div style="background: rgba(45,45,45,0.95); padding:1.5rem; border-radius:16px; box-shadow:0 8px 32px rgba(0,0,0,0.3); backdrop-filter:blur(10px); border:1px solid rgba(255,255,255,0.1); margin:1rem 0; color:#ffffff;">
                 <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:1rem;">
                     <div style="flex:1;">
-                        <h3 style="margin:0 0 .5rem 0; font-size:1.3rem; font-weight:600; letter-spacing:.5px;">{course_name}</h3>
-                        <p style="color:#cccccc; margin:.25rem 0; font-size:.85rem;">🆔 Coach ID: {coach_id}</p>
-                        <p style="color:#cccccc; margin:.25rem 0; font-size:.85rem;">📅 {time_plan}</p>
+                        <h3 style="margin:0 0 .5rem 0; font-size:1.4rem; font-weight:600; letter-spacing:.5px;">{course_name}</h3>
+                        <p style="color:#cccccc; margin:.25rem 0; font-size:1rem;">🆔 Coach ID: {coach_id}</p>
+                        <p style="color:#cccccc; margin:.25rem 0; font-size:1rem;">📅 {time_plan}</p>
                         <div style="margin-top:.75rem; display:flex; flex-wrap:wrap; gap:.5rem; align-items:center;">
                             <span style="background:{status_color}; color:#ffffff; padding:0.25rem 0.65rem; border-radius:16px; font-size:.7rem; font-weight:500; display:inline-flex; gap:.35rem; align-items:center;">{status_icon} {course['availability']}</span>
                             <span style="background:rgba(75,75,75,0.8); color:#cccccc; padding:0.25rem 0.65rem; border-radius:16px; font-size:.7rem;">{current_reg}/{max_cap} registered</span>
