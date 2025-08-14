@@ -148,10 +148,10 @@ def display_member_cards(members_df):
             <div style="background: rgba(45, 45, 45, 0.95); padding: 1.5rem; border-radius: 16px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); margin: 1rem 0; transition: transform 0.3s ease, box-shadow 0.3s ease; color: #ffffff;">
                 <div style="display: flex; justify-content: space-between; align-items: start;">
                     <div style="flex: 1;">
-                        <h3 style="margin: 0; color: #ffffff; font-size: 1.2rem;">👤 {member_name}</h3>
-                        <p style="color: #cccccc; margin: 0.3rem 0; font-size: 0.9rem;">📧 {member_email}</p>
-                        <p style="color: #cccccc; margin: 0.3rem 0; font-size: 0.9rem;">🆔 Member ID: #{member_id}</p>
-                        <p style="color: #cccccc; margin: 0.3rem 0; font-size: 0.9rem;">🎫 Access Card: #{access_card_id}</p>
+                        <h3 style="margin: 0; color: #ffffff; font-size: 1.4rem;">👤 {member_name}</h3>
+                        <p style="color: #cccccc; margin: 0.3rem 0; font-size: 1rem;">📧 {member_email}</p>
+                        <p style="color: #cccccc; margin: 0.3rem 0; font-size: 1rem;">🆔 Member ID: #{member_id}</p>
+                        <p style="color: #cccccc; margin: 0.3rem 0; font-size: 1rem;">🎫 Access Card: #{access_card_id}</p>
                         <div style="margin-top: 1rem;">
                             <span style="background: {status_color}; color: white; padding: 0.2rem 0.6rem; border-radius: 15px; font-size: 0.8rem; font-weight: 500;">
                                 {status_icon} {member_status}
