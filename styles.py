@@ -39,33 +39,35 @@ def apply_custom_css():
     header {visibility: hidden;}
     .stDeployButton {display:none;}
     
-    /* Main container styling */
+    /* Main container styling - Dark Theme */
     .stApp {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
         min-height: 100vh;
         font-family: 'Inter', sans-serif;
+        color: #ffffff;
     }
     
-    /* Header styling */
+    /* Header styling - Dark Theme */
     .main-header {
-        background: rgba(255, 255, 255, 0.95);
+        background: rgba(45, 45, 45, 0.95);
         backdrop-filter: blur(10px);
         padding: 1rem 2rem;
         border-radius: 0 0 20px 20px;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
         margin-bottom: 2rem;
     }
     
-    /* Card styling */
+    /* Card styling - Dark Theme */
     .metric-card {
-        background: rgba(255, 255, 255, 0.95);
+        background: rgba(45, 45, 45, 0.95);
         padding: 1.5rem;
         border-radius: 16px;
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
         backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.1);
         margin: 1rem 0;
         transition: transform 0.3s ease, box-shadow 0.3s ease;
+        color: #ffffff;
     }
     
     .metric-card:hover {
@@ -134,10 +136,21 @@ def apply_custom_css():
         padding: 0.75rem 1rem;
     }
     
-    /* Sidebar styling */
+    /* Sidebar styling - Dark Theme */
     .css-1d391kg {
-        background: rgba(255, 255, 255, 0.95);
+        background: rgba(45, 45, 45, 0.95);
         backdrop-filter: blur(10px);
+        color: #ffffff;
+    }
+    
+    /* Update sidebar text colors */
+    [data-testid="stSidebar"] {
+        background: rgba(45, 45, 45, 0.95);
+        color: #ffffff;
+    }
+    
+    [data-testid="stSidebar"] * {
+        color: #ffffff !important;
     }
     
     /* Table styling */
@@ -166,27 +179,28 @@ def apply_custom_css():
         padding-left: 1rem;
     }
     
-    /* Welcome card */
+    /* Welcome card - Dark Theme */
     .welcome-card {
-        background: rgba(255, 255, 255, 0.95);
+        background: rgba(45, 45, 45, 0.95);
         backdrop-filter: blur(10px);
         padding: 3rem 2rem;
         border-radius: 24px;
         text-align: center;
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
         margin: 2rem 0;
+        color: #ffffff;
     }
     
     .welcome-title {
         font-size: 2.5rem;
         font-weight: 700;
-        color: var(--dark-gray);
+        color: #ffffff;
         margin-bottom: 1rem;
     }
     
     .welcome-subtitle {
         font-size: 1.2rem;
-        color: #6B7280;
+        color: #cccccc;
         margin-bottom: 2rem;
     }
     

@@ -1,17 +1,6 @@
 import streamlit as st
 import datetime
-from styles import apply_custom_css, create_welcome_card, create_metric_card
-
-# Page configuration
-st.set_page_config(
-    page_title="Steel Fist Gym",
-    page_icon="🏋️‍♂️",
-    layout="wide",
-    initial_sidebar_state="expanded"
-)
-
-# Apply custom styling
-apply_custom_css()
+from styles import apply_custom_css, create_welcome_card
 
 # Initialize session state for role
 if "role" not in st.session_state:
@@ -19,8 +8,27 @@ if "role" not in st.session_state:
 
 ROLES = ["—", "Member", "Admin"]
 
+# Define admin pages (initial placeholders before login)
+manage_coaches = st.Page("pages/manage_coaches.py", title="Manage Coaches", icon="🧑‍🏫", default=True)
+manage_courses = st.Page("pages/manage_courses.py", title="Manage Courses", icon="📚")
+manage_members = st.Page("pages/manage_members.py", title="Manage Members", icon="👥")
+view_registered_users = st.Page("pages/view_registered_users.py", title="View Registrations", icon="📋")
+settings = st.Page("pages/settings.py", title="Settings", icon="⚙️") if st.session_state["role"] == "Admin" else None
+
+
 def login():
     """Modern Login Page"""
+    # Page configuration for login only
+    st.set_page_config(
+        page_title="Steel Fist Gym - Login",
+        page_icon="🏋️‍♂️",
+        layout="wide",
+        initial_sidebar_state="collapsed"
+    )
+    
+    # Apply custom styling
+    apply_custom_css()
+    
     # Header with gym branding
     st.markdown("""
     <div class="main-header">
@@ -111,194 +119,132 @@ def logout():
     """This should not be called directly anymore"""
     pass
 
-# Main app session state
-role = st.session_state["role"]
-
-# Navigate pages based on session state status
+# Main app logic
 if st.session_state["role"] is None:
     login()
-    
-elif st.session_state["role"] == "Member":
-    # Ensure sidebar visibility with CSS and JavaScript
-    st.markdown("""
-    <style>
-    [data-testid="stSidebar"] {
-        display: block !important;
-        visibility: visible !important;
-        width: 21rem !important;
-    }
-    [data-testid="collapsedControl"] {
-        display: block !important;
-    }
-    .css-1d391kg {
-        width: 21rem !important;
-    }
-    </style>
-    <script>
-    // Force expand sidebar on page load
-    window.addEventListener('load', function() {
-        setTimeout(function() {
-            const collapseBtn = parent.document.querySelector('[data-testid="collapsedControl"]');
-            if (collapseBtn && getComputedStyle(collapseBtn).display !== 'none') {
-                collapseBtn.click();
-            }
-        }, 500);
-    });
-    </script>
-    """, unsafe_allow_html=True)
-    
-    # Define pages for members
-    settings = st.Page("pages/settings.py", title="⚙️ Settings", icon=":material/settings:")
-    member_registration = st.Page("app_members.py", title="📝 Course Registration", icon="👤", default=True)
-    course_register = st.Page("pages/course_registration.py", title="🎯 Browse Courses", icon="📚")
-    
-    # Group member pages (no logout page in navigation)
-    member_pages = [member_registration, course_register]
-    account_pages = [settings]
-    
-    # Modern sidebar for members
-    with st.sidebar:
-        # Add a notice about sidebar visibility
-        if st.button("🔄 Refresh Navigation", help="Click if navigation is not visible"):
-            st.rerun()
-            
-        st.markdown("""
-        <div style="text-align: center; padding: 1rem;">
-            <h2 style="color: #4F46E5; margin-bottom: 0;">🏋️‍♂️ Steel Fist</h2>
-            <p style="color: #6B7280; margin: 0;">Member Portal</p>
-        </div>
-        """, unsafe_allow_html=True)
-        
-        st.markdown("---")
-        
-        # User info
-        st.markdown("""
-        <div class="user-info">
-            <div style="display: flex; align-items: center;">
-                <div style="width: 40px; height: 40px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 0.75rem;">
-                    <span style="color: white; font-weight: bold;">👤</span>
-                </div>
-                <div>
-                    <p style="margin: 0; font-weight: 600; color: #1F2937;">Member User</p>
-                    <p style="margin: 0; font-size: 0.875rem; color: #6B7280;">Active Member</p>
-                </div>
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
-        
-        st.markdown("---")
-        
-        # Add logout button in sidebar
-        handle_logout()
-    
-    # Navigation for members
-    pg = st.navigation(
-        {
-            "🏠 Member Area": member_pages,
-            "⚙️ Account": account_pages,
-        }
+else:
+    # Page configuration for logged-in users
+    st.set_page_config(
+        page_title="Steel Fist Gym",
+        page_icon="🏋️‍♂️",
+        layout="wide",
+        initial_sidebar_state="expanded"
     )
-    pg.run()
-
-elif st.session_state["role"] == "Admin":
-    # Ensure sidebar visibility with CSS and JavaScript
-    st.markdown("""
-    <style>
-    [data-testid="stSidebar"] {
-        display: block !important;
-        visibility: visible !important;
-        width: 21rem !important;
-    }
-    [data-testid="collapsedControl"] {
-        display: block !important;
-    }
-    .css-1d391kg {
-        width: 21rem !important;
-    }
-    </style>
-    <script>
-    // Force expand sidebar on page load
-    window.addEventListener('load', function() {
-        setTimeout(function() {
-            const collapseBtn = parent.document.querySelector('[data-testid="collapsedControl"]');
-            if (collapseBtn && getComputedStyle(collapseBtn).display !== 'none') {
-                collapseBtn.click();
-            }
-        }, 500);
-    });
-    </script>
-    """, unsafe_allow_html=True)
     
-    # Define pages for admins
-    settings = st.Page("pages/settings.py", title="⚙️ Settings", icon=":material/settings:")
-    manage_coaches = st.Page("pages/manage_coaches.py", title="👨‍🏫 Manage Coaches", icon="🏋️", default=True)
-    manage_courses = st.Page("pages/manage_courses.py", title="📚 Manage Courses", icon="📚")
-    manage_members = st.Page("pages/manage_members.py", title="👥 Manage Members", icon="👥")
-    view_registered_users = st.Page("pages/view_registered_users.py", title="📋 View Registrations", icon="📋")
+    # Apply custom styling
+    apply_custom_css()
     
-    # Group admin pages (no logout page in navigation)
-    account_pages = [settings]
-    admin_pages = [manage_coaches, manage_courses, manage_members, view_registered_users]
-    
-    # Modern sidebar for admins
-    with st.sidebar:
-        # Add a notice about sidebar visibility
-        if st.button("🔄 Refresh Navigation", help="Click if navigation is not visible"):
-            st.rerun()
+    if st.session_state["role"] == "Admin":
+        # Define admin pages (fixed invalid emojis)
+        manage_coaches = st.Page("pages/manage_coaches.py", title="👨‍🏫 Manage Coaches", icon="👨‍🏫", default=True)
+        manage_courses = st.Page("pages/manage_courses.py", title="📚 Manage Courses", icon="📚")
+        manage_members = st.Page("pages/manage_members.py", title="👥 Manage Members", icon="👥")
+        view_registered_users = st.Page("pages/view_registered_users.py", title="📋 View Registrations", icon="📋")
+        settings = st.Page("pages/settings.py", title="⚙️ Settings", icon="⚙️")
+        
+        # Create navigation
+        pg = st.navigation({
+            "🛠️ Management": [manage_coaches, manage_courses, manage_members, view_registered_users],
+            "⚙️ Account": [settings]
+        })
+        
+        # Custom sidebar content
+        with st.sidebar:
+            st.markdown("""
+            <div style="text-align: center; padding: 1rem;">
+                <h2 style="color: #4F46E5; margin-bottom: 0;">🏋️‍♂️ Steel Fist</h2>
+                <p style="color: #6B7280; margin: 0;">Admin Dashboard</p>
+            </div>
+            """, unsafe_allow_html=True)
             
-        st.markdown("""
-        <div style="text-align: center; padding: 1rem;">
-            <h2 style="color: #4F46E5; margin-bottom: 0;">🏋️‍♂️ Steel Fist</h2>
-            <p style="color: #6B7280; margin: 0;">Admin Dashboard</p>
-        </div>
-        """, unsafe_allow_html=True)
-        
-        st.markdown("---")
-        
-        # Admin info
-        st.markdown("""
-        <div class="user-info">
-            <div style="display: flex; align-items: center;">
-                <div style="width: 40px; height: 40px; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 0.75rem;">
-                    <span style="color: white; font-weight: bold;">🔑</span>
-                </div>
-                <div>
-                    <p style="margin: 0; font-weight: 600; color: #1F2937;">Admin User</p>
-                    <p style="margin: 0; font-size: 0.875rem; color: #6B7280;">System Administrator</p>
+            st.markdown("---")
+            
+            # Admin info
+            st.markdown("""
+            <div class="user-info">
+                <div style="display: flex; align-items: center;">
+                    <div style="width: 40px; height: 40px; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 0.75rem;">
+                        <span style="color: white; font-weight: bold;">🔑</span>
+                    </div>
+                    <div>
+                        <p style="margin: 0; font-weight: 600; color: #1F2937;">Admin User</p>
+                        <p style="margin: 0; font-size: 0.875rem; color: #6B7280;">System Administrator</p>
+                    </div>
                 </div>
             </div>
-        </div>
-        """, unsafe_allow_html=True)
-        
-        # Quick stats
-        st.markdown("### 📊 Quick Stats")
-        st.markdown("""
-        <div class="quick-stats">
-            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-                <span style="color: #6B7280;">Members:</span>
-                <span style="font-weight: 600; color: #10B981;">142</span>
+            """, unsafe_allow_html=True)
+            
+            st.markdown("---")
+            
+            # Quick stats
+            st.markdown("### 📊 Quick Stats")
+            st.markdown("""
+            <div class="quick-stats">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                    <span style="color: #6B7280;">Members:</span>
+                    <span style="font-weight: 600; color: #10B981;">142</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                    <span style="color: #6B7280;">Coaches:</span>
+                    <span style="font-weight: 600; color: #3B82F6;">8</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                    <span style="color: #6B7280;">Active Courses:</span>
+                    <span style="font-weight: 600; color: #F59E0B;">24</span>
+                </div>
             </div>
-            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-                <span style="color: #6B7280;">Coaches:</span>
-                <span style="font-weight: 600; color: #3B82F6;">8</span>
-            </div>
-            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-                <span style="color: #6B7280;">Active Courses:</span>
-                <span style="font-weight: 600; color: #F59E0B;">24</span>
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
+            """, unsafe_allow_html=True)
+            
+            st.markdown("---")
+            
+            # Add logout button in sidebar
+            handle_logout()
         
-        st.markdown("---")
+        # Run the navigation
+        pg.run()
         
-        # Add logout button in sidebar
-        handle_logout()
-    
-    # Navigation for admins
-    pg = st.navigation(
-        {
-            "🛠️ Management": admin_pages,
-            "⚙️ Account": account_pages,
-        }
-    )
-    pg.run()
+    elif st.session_state["role"] == "Member":
+        # Define member pages (fixed invalid emojis)
+        member_registration = st.Page("app_members.py", title="📝 Course Registration", icon="👤", default=True)
+        course_register = st.Page("pages/course_registration.py", title="🎯 Browse Courses", icon="🎯")
+        settings = st.Page("pages/settings.py", title="⚙️ Settings", icon="⚙️")
+        
+        # Create navigation
+        pg = st.navigation({
+            "🏠 Member Area": [member_registration, course_register],
+            "⚙️ Account": [settings]
+        })
+        
+        # Custom sidebar content
+        with st.sidebar:
+            st.markdown("""
+            <div style="text-align: center; padding: 1rem;">
+                <h2 style="color: #4F46E5; margin-bottom: 0;">🏋️‍♂️ Steel Fist</h2>
+                <p style="color: #6B7280; margin: 0;">Member Portal</p>
+            </div>
+            """, unsafe_allow_html=True)
+            
+            st.markdown("---")
+            
+            # User info
+            st.markdown("""
+            <div class="user-info">
+                <div style="display: flex; align-items: center;">
+                    <div style="width: 40px; height: 40px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 0.75rem;">
+                        <span style="color: white; font-weight: bold;">👤</span>
+                    </div>
+                    <div>
+                        <p style="margin: 0; font-weight: 600; color: #1F2937;">Member User</p>
+                        <p style="margin: 0; font-size: 0.875rem; color: #6B7280;">Active Member</p>
+                    </div>
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+            
+            st.markdown("---")
+            
+            # Add logout button in sidebar
+            handle_logout()
+        
+        # Run the navigation
+        pg.run()

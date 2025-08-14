@@ -61,7 +61,7 @@ def display_coach_cards(coaches_df):
             <div class="coach-card">
                 <div style="display: flex; justify-content: space-between; align-items: start;">
                     <div>
-                        <h3 style="margin: 0; color: #1F2937; font-size: 1.3rem;">👨‍🏫 {coach['coach_name']}</h3>
+                        <h3 style="margin: 0; color: #ffffff; font-size: 1.3rem;">👨‍🏫 {coach['coach_name']}</h3>
                         <p style="color: #6B7280; margin: 0.5rem 0; font-size: 0.9rem;">Coach ID: #{coach['coach_id']}</p>
                         <span style="background: {color}; color: white; padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.8rem; font-weight: 500;">
                             🎯 {specialty.title()}
@@ -91,24 +91,48 @@ if not st.session_state.df.empty:
     
     with col1:
         total_coaches = len(st.session_state.df)
-        st.markdown(create_metric_card("Total Coaches", str(total_coaches), "👨‍🏫"), unsafe_allow_html=True)
+        st.markdown("""
+        <div style="background: white; padding: 1.5rem; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); text-align: center; margin: 1rem 0; height: 140px; display: flex; flex-direction: column; justify-content: center;">
+            <div style="font-size: 2rem; margin-bottom: 1rem;">👨‍🏫</div>
+            <h4 style="color: #ffffff; margin: 0; font-size: 1.1rem; line-height: 1.2;">Total Coaches</h4>
+            <p style="color: #6B7280; margin: 0.5rem 0 0 0; font-size: 0.9rem; font-weight: 500;">{}</p>
+        </div>
+        """.format(str(total_coaches)), unsafe_allow_html=True)
     
     with col2:
         if 'specialty' in st.session_state.df.columns:
             specialties = st.session_state.df['specialty'].nunique()
         else:
             specialties = 0
-        st.markdown(create_metric_card("Specialties", str(specialties), "🎯"), unsafe_allow_html=True)
+        st.markdown("""
+        <div style="background: white; padding: 1.5rem; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); text-align: center; margin: 1rem 0; height: 140px; display: flex; flex-direction: column; justify-content: center;">
+            <div style="font-size: 2rem; margin-bottom: 1rem;">🎯</div>
+            <h4 style="color: #ffffff; margin: 0; font-size: 1.1rem; line-height: 1.2;">Specialties</h4>
+            <p style="color: #6B7280; margin: 0.5rem 0 0 0; font-size: 0.9rem; font-weight: 500;">{}</p>
+        </div>
+        """.format(str(specialties)), unsafe_allow_html=True)
     
     with col3:
         if 'specialty' in st.session_state.df.columns and not st.session_state.df.empty:
             most_common = st.session_state.df['specialty'].mode().iloc[0] if len(st.session_state.df['specialty'].mode()) > 0 else "N/A"
         else:
             most_common = "N/A"
-        st.markdown(create_metric_card("Popular Specialty", most_common.title() if most_common != "N/A" else "N/A", "⭐"), unsafe_allow_html=True)
+        st.markdown("""
+        <div style="background: white; padding: 1.5rem; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); text-align: center; margin: 1rem 0; height: 140px; display: flex; flex-direction: column; justify-content: center;">
+            <div style="font-size: 2rem; margin-bottom: 1rem;">⭐</div>
+            <h4 style="color: #ffffff; margin: 0; font-size: 1.1rem; line-height: 1.2;">Popular Specialty</h4>
+            <p style="color: #6B7280; margin: 0.5rem 0 0 0; font-size: 0.9rem; font-weight: 500;">{}</p>
+        </div>
+        """.format(most_common.title() if most_common != "N/A" else "N/A"), unsafe_allow_html=True)
     
     with col4:
-        st.markdown(create_metric_card("System Status", "Active", "✅"), unsafe_allow_html=True)
+        st.markdown("""
+        <div style="background: white; padding: 1.5rem; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); text-align: center; margin: 1rem 0; height: 140px; display: flex; flex-direction: column; justify-content: center;">
+            <div style="font-size: 2rem; margin-bottom: 1rem;">✅</div>
+            <h4 style="color: #ffffff; margin: 0; font-size: 1.1rem; line-height: 1.2;">System Status</h4>
+            <p style="color: #6B7280; margin: 0.5rem 0 0 0; font-size: 0.9rem; font-weight: 500;">Active</p>
+        </div>
+        """, unsafe_allow_html=True)
     
     # Coach distribution chart
     col1, col2 = st.columns([2, 1])

@@ -1,7 +1,7 @@
 # Modern Member Management Interface
 import streamlit as st
 from init_db import engine
-from sqlmodel import Session, select, func
+from sqlmodel import Session, select, func, text
 from model import Members, Coaches, Accesscards, Registrations, Courses
 from utils import add_member, select_course, add_course, delete_course, delete_member, update_members
 import pandas as pd
@@ -16,26 +16,43 @@ apply_custom_css()
 def member_list():
     """Get enhanced member list with additional statistics"""
     with Session(engine) as session:
-        stmt = select(Members)
-        results = session.exec(stmt).all()
-        data = []
-        for row in results:
-            # Count member's registrations
-            reg_count = len(session.exec(
-                select(Registrations)
-                .where(Registrations.member_id == str(row.member_id))
-            ).all())
+        try:
+            # Use direct SQL query to ensure we get the right data
+            results = session.execute(text("SELECT * FROM members")).fetchall()
             
-            data.append({
-                'member_id': row.member_id,
-                'member_name': row.member_name,
-                'email': row.email,
-                'access_card_id': row.access_card_id,
-                'total_registrations': reg_count,
-                'status': 'Active' if reg_count > 0 else 'Inactive'
-            })
-        
-        return pd.DataFrame(data)
+            data = []
+            for row in results:
+                # Get member data safely
+                member_id = row[0] if len(row) > 0 else None
+                member_name = row[1] if len(row) > 1 else "Unknown"
+                email = row[2] if len(row) > 2 else "No email"
+                access_card_id = row[3] if len(row) > 3 else None
+                
+                # Count member's registrations
+                reg_count = 0
+                try:
+                    reg_result = session.execute(text(f"SELECT COUNT(*) FROM registrations WHERE member_id = '{member_id}'")).fetchone()
+                    reg_count = reg_result[0] if reg_result else 0
+                except:
+                    reg_count = 0
+                
+                data.append({
+                    'member_id': member_id,
+                    'member_name': member_name,
+                    'email': email,
+                    'access_card_id': access_card_id,
+                    'total_registrations': reg_count,
+                    'status': 'Active' if reg_count > 0 else 'Inactive'
+                })
+            
+            df = pd.DataFrame(data)
+            print(f"DEBUG: Retrieved {len(df)} members with columns: {df.columns.tolist()}")
+            return df
+            
+        except Exception as e:
+            print(f"ERROR in member_list: {e}")
+            # Return empty DataFrame with correct structure
+            return pd.DataFrame(columns=['member_id', 'member_name', 'email', 'access_card_id', 'total_registrations', 'status'])
 
 def create_member_activity_chart(members_df):
     """Create a chart showing member activity distribution"""
@@ -66,6 +83,15 @@ def display_member_cards(members_df):
         st.warning("No members found in the system.")
         return
     
+    # Check if required columns exist
+    required_columns = ['member_name', 'email', 'member_id', 'access_card_id', 'total_registrations']
+    missing_columns = [col for col in required_columns if col not in members_df.columns]
+    
+    if missing_columns:
+        st.error(f"Missing columns in member data: {missing_columns}")
+        st.write("Available columns:", list(members_df.columns))
+        return
+    
     # Pagination for large datasets
     items_per_page = 10
     total_items = len(members_df)
@@ -82,7 +108,7 @@ def display_member_cards(members_df):
             st.rerun()
     
     with col2:
-        st.markdown(f"<div style='text-align: center; font-weight: 600;'>Page {st.session_state.current_page} of {total_pages}</div>", unsafe_allow_html=True)
+        st.markdown(f"<div style='text-align: center; font-weight: 600; color: #ffffff;'>Page {st.session_state.current_page} of {total_pages}</div>", unsafe_allow_html=True)
     
     with col3:
         if st.button("Next ➡️") and st.session_state.current_page < total_pages:
@@ -104,20 +130,27 @@ def display_member_cards(members_df):
             status_color = "#10B981" if member_status == 'Active' else "#6B7280"
             status_icon = "🟢" if member_status == 'Active' else "⚪"
             
+            # Safely get member data with defaults
+            member_name = member.get('member_name', 'Unknown')
+            member_email = member.get('email', 'No email')
+            member_id = member.get('member_id', 'N/A')
+            access_card_id = member.get('access_card_id', 'N/A')
+            total_registrations = member.get('total_registrations', 0)
+            
             st.markdown(f"""
-            <div class="metric-card">
+            <div style="background: rgba(45, 45, 45, 0.95); padding: 1.5rem; border-radius: 16px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); margin: 1rem 0; transition: transform 0.3s ease, box-shadow 0.3s ease; color: #ffffff;">
                 <div style="display: flex; justify-content: space-between; align-items: start;">
                     <div style="flex: 1;">
-                        <h3 style="margin: 0; color: #1F2937; font-size: 1.2rem;">👤 {member['member_name']}</h3>
-                        <p style="color: #6B7280; margin: 0.3rem 0; font-size: 0.9rem;">📧 {member['email']}</p>
-                        <p style="color: #6B7280; margin: 0.3rem 0; font-size: 0.9rem;">🆔 Member ID: #{member['member_id']}</p>
-                        <p style="color: #6B7280; margin: 0.3rem 0; font-size: 0.9rem;">🎫 Access Card: #{member['access_card_id']}</p>
+                        <h3 style="margin: 0; color: #ffffff; font-size: 1.2rem;">👤 {member_name}</h3>
+                        <p style="color: #cccccc; margin: 0.3rem 0; font-size: 0.9rem;">📧 {member_email}</p>
+                        <p style="color: #cccccc; margin: 0.3rem 0; font-size: 0.9rem;">🆔 Member ID: #{member_id}</p>
+                        <p style="color: #cccccc; margin: 0.3rem 0; font-size: 0.9rem;">🎫 Access Card: #{access_card_id}</p>
                         <div style="margin-top: 1rem;">
                             <span style="background: {status_color}; color: white; padding: 0.2rem 0.6rem; border-radius: 15px; font-size: 0.8rem; font-weight: 500;">
                                 {status_icon} {member_status}
                             </span>
-                            <span style="background: #F3F4F6; color: #374151; padding: 0.2rem 0.6rem; border-radius: 15px; font-size: 0.8rem; margin-left: 0.5rem;">
-                                📊 {member['total_registrations']} registrations
+                            <span style="background: rgba(75, 75, 75, 0.8); color: #cccccc; padding: 0.2rem 0.6rem; border-radius: 15px; font-size: 0.8rem; margin-left: 0.5rem;">
+                                📊 {total_registrations} registrations
                             </span>
                         </div>
                     </div>
@@ -145,21 +178,39 @@ if not st.session_state.df.empty:
     
     with col1:
         total_members = len(st.session_state.df)
-        st.markdown(create_metric_card("Total Members", str(total_members), "👥"), unsafe_allow_html=True)
+        st.markdown("""
+        <div style="background: white; padding: 1.5rem; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); text-align: center; margin: 1rem 0; height: 140px; display: flex; flex-direction: column; justify-content: center;">
+            <div style="font-size: 2rem; margin-bottom: 1rem;">👥</div>
+            <h4 style="color: #ffffff; margin: 0; font-size: 1.1rem; line-height: 1.2;">Total Members</h4>
+            <p style="color: #6B7280; margin: 0.5rem 0 0 0; font-size: 0.9rem; font-weight: 500;">{}</p>
+        </div>
+        """.format(str(total_members)), unsafe_allow_html=True)
     
     with col2:
         if 'status' in st.session_state.df.columns:
             active_members = len(st.session_state.df[st.session_state.df['status'] == 'Active'])
         else:
             active_members = 0
-        st.markdown(create_metric_card("Active Members", str(active_members), "🟢"), unsafe_allow_html=True)
+        st.markdown("""
+        <div style="background: white; padding: 1.5rem; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); text-align: center; margin: 1rem 0; height: 140px; display: flex; flex-direction: column; justify-content: center;">
+            <div style="font-size: 2rem; margin-bottom: 1rem;">🟢</div>
+            <h4 style="color: #ffffff; margin: 0; font-size: 1.1rem; line-height: 1.2;">Active Members</h4>
+            <p style="color: #6B7280; margin: 0.5rem 0 0 0; font-size: 0.9rem; font-weight: 500;">{}</p>
+        </div>
+        """.format(str(active_members)), unsafe_allow_html=True)
     
     with col3:
         if 'total_registrations' in st.session_state.df.columns:
             avg_registrations = st.session_state.df['total_registrations'].mean()
         else:
             avg_registrations = 0
-        st.markdown(create_metric_card("Avg Registrations", f"{avg_registrations:.1f}", "📊"), unsafe_allow_html=True)
+        st.markdown("""
+        <div style="background: white; padding: 1.5rem; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); text-align: center; margin: 1rem 0; height: 140px; display: flex; flex-direction: column; justify-content: center;">
+            <div style="font-size: 2rem; margin-bottom: 1rem;">📊</div>
+            <h4 style="color: #ffffff; margin: 0; font-size: 1.1rem; line-height: 1.2;">Avg Registrations</h4>
+            <p style="color: #6B7280; margin: 0.5rem 0 0 0; font-size: 0.9rem; font-weight: 500;">{}</p>
+        </div>
+        """.format(f"{avg_registrations:.1f}"), unsafe_allow_html=True)
     
     with col4:
         if 'status' in st.session_state.df.columns:
@@ -167,7 +218,13 @@ if not st.session_state.df.empty:
         else:
             active_members = 0
         engagement_rate = (active_members / total_members * 100) if total_members > 0 else 0
-        st.markdown(create_metric_card("Engagement Rate", f"{engagement_rate:.1f}%", "⚡"), unsafe_allow_html=True)
+        st.markdown("""
+        <div style="background: white; padding: 1.5rem; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); text-align: center; margin: 1rem 0; height: 140px; display: flex; flex-direction: column; justify-content: center;">
+            <div style="font-size: 2rem; margin-bottom: 1rem;">⚡</div>
+            <h4 style="color: #ffffff; margin: 0; font-size: 1.1rem; line-height: 1.2;">Engagement Rate</h4>
+            <p style="color: #6B7280; margin: 0.5rem 0 0 0; font-size: 0.9rem; font-weight: 500;">{}</p>
+        </div>
+        """.format(f"{engagement_rate:.1f}%"), unsafe_allow_html=True)
     
     # Charts and quick actions
     col1, col2 = st.columns([2, 1])

@@ -148,7 +148,7 @@ def display_course_cards(courses_df):
             <div style="background: white; padding: 1.5rem; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); margin: 1rem 0;">
                 <div style="display: flex; justify-content: space-between; align-items: start;">
                     <div style="flex: 1;">
-                        <h3 style="margin: 0; color: #1F2937; font-size: 1.2rem;">🏋️ {course['course_name']}</h3>
+                        <h3 style="margin: 0; color: #ffffff; font-size: 1.2rem;">🏋️ {course['course_name']}</h3>
                         <p style="color: #6B7280; margin: 0.3rem 0; font-size: 0.9rem;">👨‍🏫 Coach: {course['coach_name']}</p>
                         <p style="color: #6B7280; margin: 0.3rem 0; font-size: 0.9rem;">🏷️ Specialty: {course['coach_specialty']}</p>
                         <p style="color: #6B7280; margin: 0.3rem 0; font-size: 0.9rem;">📅 {formatted_date}</p>
@@ -194,19 +194,43 @@ if not st.session_state.courses_df.empty:
     
     with col1:
         total_courses = len(st.session_state.courses_df)
-        st.markdown(create_metric_card("Total Courses", str(total_courses), "🎯"), unsafe_allow_html=True)
+        st.markdown("""
+        <div style="background: rgba(45, 45, 45, 0.95); padding: 1.5rem; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3); text-align: center; margin: 1rem 0; height: 140px; display: flex; flex-direction: column; justify-content: center;">
+            <div style="font-size: 2rem; margin-bottom: 1rem;">🎯</div>
+            <h4 style="color: #ffffff; margin: 0; font-size: 1.1rem; line-height: 1.2;">Total Courses</h4>
+            <p style="color: #cccccc; margin: 0.5rem 0 0 0; font-size: 0.9rem; font-weight: 500;">{}</p>
+        </div>
+        """.format(str(total_courses)), unsafe_allow_html=True)
     
     with col2:
         active_courses = len(st.session_state.courses_df[st.session_state.courses_df['status'] == 'Active'])
-        st.markdown(create_metric_card("Active Courses", str(active_courses), "🟢"), unsafe_allow_html=True)
+        st.markdown("""
+        <div style="background: rgba(45, 45, 45, 0.95); padding: 1.5rem; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3); text-align: center; margin: 1rem 0; height: 140px; display: flex; flex-direction: column; justify-content: center;">
+            <div style="font-size: 2rem; margin-bottom: 1rem;">🟢</div>
+            <h4 style="color: #ffffff; margin: 0; font-size: 1.1rem; line-height: 1.2;">Active Courses</h4>
+            <p style="color: #cccccc; margin: 0.5rem 0 0 0; font-size: 0.9rem; font-weight: 500;">{}</p>
+        </div>
+        """.format(str(active_courses)), unsafe_allow_html=True)
     
     with col3:
         total_participants = st.session_state.courses_df['total_participants'].sum()
-        st.markdown(create_metric_card("Total Participants", str(total_participants), "👥"), unsafe_allow_html=True)
+        st.markdown("""
+        <div style="background: rgba(45, 45, 45, 0.95); padding: 1.5rem; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3); text-align: center; margin: 1rem 0; height: 140px; display: flex; flex-direction: column; justify-content: center;">
+            <div style="font-size: 2rem; margin-bottom: 1rem;">👥</div>
+            <h4 style="color: #ffffff; margin: 0; font-size: 1.1rem; line-height: 1.2;">Total Participants</h4>
+            <p style="color: #cccccc; margin: 0.5rem 0 0 0; font-size: 0.9rem; font-weight: 500;">{}</p>
+        </div>
+        """.format(str(total_participants)), unsafe_allow_html=True)
     
     with col4:
         avg_participants = st.session_state.courses_df['total_participants'].mean()
-        st.markdown(create_metric_card("Avg Per Course", f"{avg_participants:.1f}", "📊"), unsafe_allow_html=True)
+        st.markdown("""
+        <div style="background: rgba(45, 45, 45, 0.95); padding: 1.5rem; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3); text-align: center; margin: 1rem 0; height: 140px; display: flex; flex-direction: column; justify-content: center;">
+            <div style="font-size: 2rem; margin-bottom: 1rem;">📊</div>
+            <h4 style="color: #ffffff; margin: 0; font-size: 1.1rem; line-height: 1.2;">Avg Per Course</h4>
+            <p style="color: #cccccc; margin: 0.5rem 0 0 0; font-size: 0.9rem; font-weight: 500;">{}</p>
+        </div>
+        """.format(f"{avg_participants:.1f}"), unsafe_allow_html=True)
     
     # Analytics charts
     st.markdown("### 📈 Course Analytics")
