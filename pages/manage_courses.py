@@ -72,6 +72,8 @@ def create_course_analytics(courses_df):
         xaxis_title="Total participants",
         yaxis_title="Course name"
     )
+    # Set readable legend/color bar title
+    fig1.update_layout(coloraxis_colorbar=dict(title="Total participants"))
 
     # Course status distribution (larger pie chart)
     status_counts = courses_df['status'].value_counts()
