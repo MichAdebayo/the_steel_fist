@@ -15,19 +15,10 @@ def get_registration_data():
     with Session(engine) as session:
         # Get all registrations first
         registrations = session.exec(select(Registrations)).all()
-        
         data = []
         for reg in registrations:
-            # Get member details
-            member = session.exec(
-                select(Members).where(Members.member_id == int(reg.member_id))
-            ).first()
-            
-            # Get course details
-            course = session.exec(
-                select(Courses).where(Courses.course_id == int(reg.course_id))
-            ).first()
-            
+            member = session.exec(select(Members).where(Members.member_id == int(reg.member_id))).first()
+            course = session.exec(select(Courses).where(Courses.course_id == int(reg.course_id))).first()
             if member and course:
                 data.append({
                     'registration_id': reg.registration_id,
@@ -37,7 +28,6 @@ def get_registration_data():
                     'time_plan': course.time_plan,
                     'registration_date': reg.registration_date
                 })
-        
         return pd.DataFrame(data)
 
 # Page header
@@ -55,42 +45,34 @@ st.markdown(create_section_header("Registration Statistics", "", "Current regist
 
 if not registrations_df.empty:
     col1, col2, col3, col4 = st.columns(4)
-    
+    card_style = "background:white; padding:1rem 1rem; border-radius:16px; box-shadow:0 2px 6px rgba(0,0,0,0.05); margin:1rem 0; height:110px; display:flex; align-items:center;"
+    inner_style = "display:flex; justify-content:space-between; width:100%; align-items:baseline; gap:.5rem;"
+    title_style = "color:#0F172A; margin:0; font-size:1.0rem; font-weight:700;"
+    value_style = "color:#374151; font-size:1.3rem; font-weight:600;"
+
     with col1:
         total_registrations = len(registrations_df)
-        st.markdown("""
-        <div style=\"background: white; padding: 1.75rem; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); text-align: center; margin: 1rem 0; height: 190px; display: flex; flex-direction: column; justify-content: space-between;\">
-            <h4 style=\"color: var(--text-high, #0F172A); margin: 0; font-size: 1.4rem; line-height: 1.2; font-weight: 700;\">Total Registrations</h4>
-            <p style=\"color: #6B7280; margin: 0; font-size: 1.6rem; font-weight: 600;\">{}</p>
-        </div>
-        """.format(str(total_registrations)), unsafe_allow_html=True)
-    
+        st.markdown(f"""
+        <div style=\"{card_style}\">\n  <div style=\"{inner_style}\">\n    <h4 style=\"{title_style}\">Total Registrations</h4>\n    <span style=\"{value_style}\">{total_registrations}</span>\n  </div>\n</div>
+        """, unsafe_allow_html=True)
+
     with col2:
         unique_members = registrations_df['member_name'].nunique()
-        st.markdown("""
-        <div style=\"background: white; padding: 1.75rem; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); text-align: center; margin: 1rem 0; height: 190px; display: flex; flex-direction: column; justify-content: space-between;\">
-            <h4 style=\"color: var(--text-high, #0F172A); margin: 0; font-size: 1.4rem; line-height: 1.2; font-weight: 700;\">Active Members</h4>
-            <p style=\"color: #6B7280; margin: 0; font-size: 1.6rem; font-weight: 600;\">{}</p>
-        </div>
-        """.format(str(unique_members)), unsafe_allow_html=True)
-    
+        st.markdown(f"""
+        <div style=\"{card_style}\">\n  <div style=\"{inner_style}\">\n    <h4 style=\"{title_style}\">Active Members</h4>\n    <span style=\"{value_style}\">{unique_members}</span>\n  </div>\n</div>
+        """, unsafe_allow_html=True)
+
     with col3:
         unique_courses = registrations_df['course_name'].nunique()
-        st.markdown("""
-        <div style=\"background: white; padding: 1.75rem; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); text-align: center; margin: 1rem 0; height: 190px; display: flex; flex-direction: column; justify-content: space-between;\">
-            <h4 style=\"color: var(--text-high, #0F172A); margin: 0; font-size: 1.4rem; line-height: 1.2; font-weight: 700;\">Courses with Registrations</h4>
-            <p style=\"color: #6B7280; margin: 0; font-size: 1.6rem; font-weight: 600;\">{}</p>
-        </div>
-        """.format(str(unique_courses)), unsafe_allow_html=True)
-    
+        st.markdown(f"""
+        <div style=\"{card_style}\">\n  <div style=\"{inner_style}\">\n    <h4 style=\"{title_style}\">Courses with Registrations</h4>\n    <span style=\"{value_style}\">{unique_courses}</span>\n  </div>\n</div>
+        """, unsafe_allow_html=True)
+
     with col4:
         avg_per_member = total_registrations / unique_members if unique_members > 0 else 0
-        st.markdown("""
-        <div style=\"background: white; padding: 1.75rem; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); text-align: center; margin: 1rem 0; height: 190px; display: flex; flex-direction: column; justify-content: space-between;\">
-            <h4 style=\"color: var(--text-high, #0F172A); margin: 0; font-size: 1.4rem; line-height: 1.2; font-weight: 700;\">Avg per Member</h4>
-            <p style=\"color: #6B7280; margin: 0; font-size: 1.6rem; font-weight: 600;\">{}</p>
-        </div>
-        """.format(f"{avg_per_member:.1f}"), unsafe_allow_html=True)
+        st.markdown(f"""
+        <div style=\"{card_style}\">\n  <div style=\"{inner_style}\">\n    <h4 style=\"{title_style}\">Avg per Member</h4>\n    <span style=\"{value_style}\">{avg_per_member:.1f}</span>\n  </div>\n</div>
+        """, unsafe_allow_html=True)
     
     # Charts
     col1, col2 = st.columns(2)
@@ -141,7 +123,6 @@ if not registrations_df.empty:
                 st.plotly_chart(fig2, use_container_width=True)
     
     # Detailed registrations table
-    # Detailed registrations table (icons removed)
     st.markdown(create_section_header("All Registrations", "", "Complete list of course registrations"), unsafe_allow_html=True)
     
     # Search and filter

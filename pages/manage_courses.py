@@ -53,11 +53,17 @@ def create_course_analytics(courses_df):
     if courses_df.empty:
         return None, None
 
+    # Prepare a display-friendly course name (capitalize first letter only to preserve acronyms like HIIT)
+    courses_display = courses_df.copy()
+    courses_display['course_name_display'] = courses_display['course_name'].apply(
+        lambda s: s[:1].upper() + s[1:] if isinstance(s, str) and s else s
+    )
+
     # Course popularity chart (larger, custom axis titles)
     fig1 = px.bar(
-        courses_df.sort_values('total_participants', ascending=True).tail(10),
+        courses_display.sort_values('total_participants', ascending=True).tail(10),
         x='total_participants',
-        y='course_name',
+        y='course_name_display',
         orientation='h',
         title="Most Popular Courses",
         color='total_participants',
@@ -70,7 +76,7 @@ def create_course_analytics(courses_df):
         title_font_size=18,
         height=430,
         xaxis_title="Total participants",
-        yaxis_title="Course name"
+    yaxis_title="Course name"
     )
     # Set readable legend/color bar title
     fig1.update_layout(coloraxis_colorbar=dict(title="Total participants"))
