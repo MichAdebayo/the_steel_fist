@@ -49,23 +49,37 @@ def display_course_cards(courses_df):
             availability_color = "🟢" if course['availability'] == 'Available' else "🔴"
             capacity_percentage = (course['current_registrations'] / course['max_capacity']) * 100
             
+            # Prepare variables outside HTML
+            course_name = course['course_name']
+            coach_id = course['coach_id']
+            time_plan = course['time_plan']
+            current_reg = course['current_registrations']
+            max_cap = course['max_capacity']
+            
+            # Determine progress bar color
+            if capacity_percentage < 80:
+                progress_color = "#10B981"
+            elif capacity_percentage < 100:
+                progress_color = "#F59E0B"
+            else:
+                progress_color = "#EF4444"
+            
             st.markdown(f"""
-            <div class="course-card">
+            <div style="background: white; padding: 1.5rem; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); margin: 1rem 0; border-left: 4px solid #4F46E5;">
                 <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
                     <div>
-                        <h3 style="margin: 0; color: #1F2937; font-size: 1.3rem;">{availability_color} {course['course_name']}</h3>
-                        <p style="color: #6B7280; margin: 0.5rem 0;">Coach ID: {course['coach_id']}</p>
-                        <p style="color: #6B7280; margin: 0; font-size: 0.9rem;">📅 {course['time_plan']}</p>
+                        <h3 style="margin: 0; color: #1F2937; font-size: 1.3rem;">{availability_color} {course_name}</h3>
+                        <p style="color: #6B7280; margin: 0.5rem 0;">Coach ID: {coach_id}</p>
+                        <p style="color: #6B7280; margin: 0; font-size: 0.9rem;">📅 {time_plan}</p>
                     </div>
                 </div>
                 <div style="background: #F3F4F6; padding: 0.75rem; border-radius: 8px; margin-top: 1rem;">
                     <div style="display: flex; justify-content: space-between; align-items: center;">
                         <span style="font-size: 0.9rem; color: #6B7280;">Capacity:</span>
-                        <span style="font-weight: 600; color: #1F2937;">{course['current_registrations']}/{course['max_capacity']}</span>
+                        <span style="font-weight: 600; color: #1F2937;">{current_reg}/{max_cap}</span>
                     </div>
                     <div style="background: #E5E7EB; border-radius: 10px; height: 8px; margin-top: 0.5rem;">
-                        <div style="background: {'#10B981' if capacity_percentage < 80 else '#F59E0B' if capacity_percentage < 100 else '#EF4444'}; 
-                                    width: {capacity_percentage}%; height: 100%; border-radius: 10px;"></div>
+                        <div style="background: {progress_color}; width: {capacity_percentage}%; height: 100%; border-radius: 10px;"></div>
                     </div>
                 </div>
             </div>
@@ -148,7 +162,7 @@ with tab1:
         st.session_state.form_submitted = True
     
     if st.session_state.stage == 0:
-        st.markdown('<div class="metric-card">', unsafe_allow_html=True)
+        st.markdown('<div style="background: white; padding: 1.5rem; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); margin: 1rem 0;">', unsafe_allow_html=True)
         with st.form("personal_details", clear_on_submit=False):
             st.markdown("#### 👤 Personal Information")
             col1, col2 = st.columns(2)
@@ -172,7 +186,7 @@ with tab1:
                 st.error("❌ Please fill in all required fields.")
 
     elif st.session_state.stage == 1:
-        st.markdown('<div class="metric-card">', unsafe_allow_html=True)
+        st.markdown('<div style="background: white; padding: 1.5rem; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); margin: 1rem 0;">', unsafe_allow_html=True)
         with st.form("choose_program"):
             st.markdown("#### 🎯 Choose Your Course")
             courses_table = courses_list()
@@ -211,7 +225,7 @@ with tab1:
             st.rerun()
 
     elif st.session_state.stage == 2:
-        st.markdown('<div class="metric-card">', unsafe_allow_html=True)
+        st.markdown('<div style="background: white; padding: 1.5rem; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); margin: 1rem 0;">', unsafe_allow_html=True)
         st.markdown("#### 📋 Review Your Registration")
         
         # Display summary

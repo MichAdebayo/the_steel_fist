@@ -157,20 +157,45 @@ if not courses_df.empty:
     
     with col1:
         total_courses = len(courses_df)
-        st.markdown(create_metric_card("Total Courses", str(total_courses), "🎯"), unsafe_allow_html=True)
+        st.markdown("""
+        <div style="background: white; padding: 1.5rem; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); text-align: center; margin: 1rem 0;">
+            <div style="font-size: 2rem; margin-bottom: 1rem;">🎯</div>
+            <h4 style="color: #1F2937; margin: 0;">Total Courses</h4>
+            <p style="color: #6B7280; margin: 0.5rem 0 0 0; font-size: 0.9rem;">{}</p>
+        </div>
+        """.format(str(total_courses)), unsafe_allow_html=True)
     
     with col2:
         available_courses = len(courses_df[courses_df['availability'] == 'Available'])
-        st.markdown(create_metric_card("Available Now", str(available_courses), "✅"), unsafe_allow_html=True)
+        st.markdown("""
+        <div style="background: white; padding: 1.5rem; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); text-align: center; margin: 1rem 0;">
+            <div style="font-size: 2rem; margin-bottom: 1rem;">✅</div>
+            <h4 style="color: #1F2937; margin: 0;">Available Now</h4>
+            <p style="color: #6B7280; margin: 0.5rem 0 0 0; font-size: 0.9rem;">{}</p>
+        </div>
+        """.format(str(available_courses)), unsafe_allow_html=True)
     
     with col3:
         total_spots = courses_df['max_capacity'].sum()
         taken_spots = courses_df['current_participants'].sum()
-        st.markdown(create_metric_card("Available Spots", str(total_spots - taken_spots), "🪑"), unsafe_allow_html=True)
+        available_spots = total_spots - taken_spots
+        st.markdown("""
+        <div style="background: white; padding: 1.5rem; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); text-align: center; margin: 1rem 0;">
+            <div style="font-size: 2rem; margin-bottom: 1rem;">🪑</div>
+            <h4 style="color: #1F2937; margin: 0;">Available Spots</h4>
+            <p style="color: #6B7280; margin: 0.5rem 0 0 0; font-size: 0.9rem;">{}</p>
+        </div>
+        """.format(str(available_spots)), unsafe_allow_html=True)
     
     with col4:
         specialties = courses_df['coach_specialty'].nunique()
-        st.markdown(create_metric_card("Specialties", str(specialties), "🏷️"), unsafe_allow_html=True)
+        st.markdown("""
+        <div style="background: white; padding: 1.5rem; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); text-align: center; margin: 1rem 0;">
+            <div style="font-size: 2rem; margin-bottom: 1rem;">🏷️</div>
+            <h4 style="color: #1F2937; margin: 0;">Specialties</h4>
+            <p style="color: #6B7280; margin: 0.5rem 0 0 0; font-size: 0.9rem;">{}</p>
+        </div>
+        """.format(str(specialties)), unsafe_allow_html=True)
     
     # Course browser
     st.markdown(create_section_header("🎯 Available Courses", "📋", "Browse and register for courses"), unsafe_allow_html=True)

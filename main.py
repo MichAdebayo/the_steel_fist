@@ -106,33 +106,55 @@ def logout():
 # Main app session state
 role = st.session_state["role"]
 
-# Create all pages with modern design
-logout_page = st.Page(logout, title="🚪 Logout", icon=":material/logout:")
-settings = st.Page("pages/settings.py", title="⚙️ Settings", icon=":material/settings:")
-dashboard = st.Page("test.py", title="📊 Dashboard")
-
-# Member pages
-member_registration = st.Page("app_members.py", title="📝 Course Registration", icon="👤", default=(role == "Member"))
-course_register = st.Page("pages/course_registration.py", title="🎯 Browse Courses", icon="📚")
-
-# Admin pages  
-manage_coaches = st.Page("pages/manage_coaches.py", title="👨‍🏫 Manage Coaches", icon="🏋️", default=(role == "Admin"))
-manage_courses = st.Page("pages/manage_courses.py", title="📚 Manage Courses", icon="📚")
-manage_members = st.Page("pages/manage_members.py", title="👥 Manage Members", icon="👥")
-view_registered_users = st.Page("pages/view_registered_users.py", title="📋 View Registrations", icon="📋")
-
-# Group pages by users
-account_pages = [logout_page, settings]
-member_pages = [member_registration, course_register]
-admin_pages = [manage_coaches, manage_courses, manage_members, view_registered_users]
-
 # Navigate pages based on session state status
 if st.session_state["role"] is None:
     login()
     
 elif st.session_state["role"] == "Member":
+    # Ensure sidebar visibility with CSS and JavaScript
+    st.markdown("""
+    <style>
+    [data-testid="stSidebar"] {
+        display: block !important;
+        visibility: visible !important;
+        width: 21rem !important;
+    }
+    [data-testid="collapsedControl"] {
+        display: block !important;
+    }
+    .css-1d391kg {
+        width: 21rem !important;
+    }
+    </style>
+    <script>
+    // Force expand sidebar on page load
+    window.addEventListener('load', function() {
+        setTimeout(function() {
+            const collapseBtn = parent.document.querySelector('[data-testid="collapsedControl"]');
+            if (collapseBtn && getComputedStyle(collapseBtn).display !== 'none') {
+                collapseBtn.click();
+            }
+        }, 500);
+    });
+    </script>
+    """, unsafe_allow_html=True)
+    
+    # Define pages for members
+    logout_page = st.Page(logout, title="🚪 Logout", icon=":material/logout:")
+    settings = st.Page("pages/settings.py", title="⚙️ Settings", icon=":material/settings:")
+    member_registration = st.Page("app_members.py", title="📝 Course Registration", icon="👤", default=True)
+    course_register = st.Page("pages/course_registration.py", title="🎯 Browse Courses", icon="📚")
+    
+    # Group member pages
+    account_pages = [logout_page, settings]
+    member_pages = [member_registration, course_register]
+    
     # Modern sidebar for members
     with st.sidebar:
+        # Add a notice about sidebar visibility
+        if st.button("🔄 Refresh Navigation", help="Click if navigation is not visible"):
+            st.rerun()
+            
         st.markdown("""
         <div style="text-align: center; padding: 1rem;">
             <h2 style="color: #4F46E5; margin-bottom: 0;">🏋️‍♂️ Steel Fist</h2>
@@ -164,10 +186,55 @@ elif st.session_state["role"] == "Member":
             "⚙️ Account": account_pages,
         }
     )
+    pg.run()
 
 elif st.session_state["role"] == "Admin":
+    # Ensure sidebar visibility with CSS and JavaScript
+    st.markdown("""
+    <style>
+    [data-testid="stSidebar"] {
+        display: block !important;
+        visibility: visible !important;
+        width: 21rem !important;
+    }
+    [data-testid="collapsedControl"] {
+        display: block !important;
+    }
+    .css-1d391kg {
+        width: 21rem !important;
+    }
+    </style>
+    <script>
+    // Force expand sidebar on page load
+    window.addEventListener('load', function() {
+        setTimeout(function() {
+            const collapseBtn = parent.document.querySelector('[data-testid="collapsedControl"]');
+            if (collapseBtn && getComputedStyle(collapseBtn).display !== 'none') {
+                collapseBtn.click();
+            }
+        }, 500);
+    });
+    </script>
+    """, unsafe_allow_html=True)
+    
+    # Define pages for admins
+    logout_page = st.Page(logout, title="🚪 Logout", icon=":material/logout:")
+    settings = st.Page("pages/settings.py", title="⚙️ Settings", icon=":material/settings:")
+    manage_coaches = st.Page("pages/manage_coaches.py", title="👨‍🏫 Manage Coaches", icon="🏋️", default=True)
+    manage_courses = st.Page("pages/manage_courses.py", title="📚 Manage Courses", icon="📚")
+    manage_members = st.Page("pages/manage_members.py", title="👥 Manage Members", icon="👥")
+    view_registered_users = st.Page("pages/view_registered_users.py", title="📋 View Registrations", icon="📋")
+    
+    # Group admin pages
+    account_pages = [logout_page, settings]
+    admin_pages = [manage_coaches, manage_courses, manage_members, view_registered_users]
+    
     # Modern sidebar for admins
     with st.sidebar:
+        # Add a notice about sidebar visibility
+        if st.button("🔄 Refresh Navigation", help="Click if navigation is not visible"):
+            st.rerun()
+            
         st.markdown("""
         <div style="text-align: center; padding: 1rem;">
             <h2 style="color: #4F46E5; margin-bottom: 0;">🏋️‍♂️ Steel Fist</h2>
@@ -218,7 +285,4 @@ elif st.session_state["role"] == "Admin":
             "⚙️ Account": account_pages,
         }
     )
-
-# Run the selected page
-if st.session_state["role"] is not None:
     pg.run()

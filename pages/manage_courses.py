@@ -145,7 +145,7 @@ def display_course_cards(courses_df):
                 formatted_time = "Time TBD"
             
             st.markdown(f"""
-            <div class="metric-card">
+            <div style="background: white; padding: 1.5rem; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); margin: 1rem 0;">
                 <div style="display: flex; justify-content: space-between; align-items: start;">
                     <div style="flex: 1;">
                         <h3 style="margin: 0; color: #1F2937; font-size: 1.2rem;">🏋️ {course['course_name']}</h3>
@@ -279,7 +279,7 @@ if delete_button:
 # ADD COURSE FORM
 ############################################################################
 if st.session_state.add_form_course:
-    st.markdown('<div class="metric-card">', unsafe_allow_html=True)
+    st.markdown('<div style="background: white; padding: 1.5rem; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); margin: 1rem 0;">', unsafe_allow_html=True)
     with st.form("add_course_form"):
         st.markdown("#### ➕ Schedule New Course")
         st.markdown("Create a new course session with coach assignment and schedule.")
@@ -335,7 +335,7 @@ if st.session_state.add_form_course:
 # DELETE COURSE FORM
 ############################################################################
 if st.session_state.delete_form_course and not st.session_state.courses_df.empty:
-    st.markdown('<div class="metric-card">', unsafe_allow_html=True)
+    st.markdown('<div style="background: white; padding: 1.5rem; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); margin: 1rem 0;">', unsafe_allow_html=True)
     with st.form("delete_course_form"):
         st.markdown("#### 🗑️ Remove Course")
         st.markdown("⚠️ **Warning:** This action cannot be undone. The course and all registrations will be permanently removed.")
