@@ -141,6 +141,17 @@ if not registrations_df.empty:
     
     # Display table with styling
     if not filtered_df.empty:
+        # Increase font size of dataframe content to 1rem
+        st.markdown(
+            """
+            <style>
+            /* Target dataframe cells in this page */
+            [data-testid=stDataFrame] table,
+            [data-testid=stDataFrame] table * { font-size:1rem !important; line-height:1.35 !important; }
+            </style>
+            """,
+            unsafe_allow_html=True
+        )
         st.dataframe(
             filtered_df,
             use_container_width=True,
