@@ -20,8 +20,8 @@ def apply_custom_css():
     /* Custom color variables (refined brand palette) */
     :root {
         /* Brand + functional colors */
-        --brand-primary: #EF233C; /* energetic red */
-        --brand-primary-rgb: 239,35,60;
+    --brand-primary: hsl(350,98%,64%); /* updated brand tone */
+    --brand-primary-rgb: 253,73,103; /* hsl(350,98%,64%) -> approx rgb */
         --brand-secondary: #2B2D42; /* dark slate */
         --brand-accent: #8D99AE; /* muted accent */
         --brand-accent-bright: #4FC3F7; /* bright accent for highlights */
@@ -36,7 +36,7 @@ def apply_custom_css():
         --warning: #F59E0B;
         --error: #DC2626;
         --info: #2563EB;
-        --gradient-primary: linear-gradient(135deg, #EF233C 0%, #FF4D6D 100%);
+    --gradient-primary: linear-gradient(135deg, hsl(350,98%,64%) 0%, hsl(350,88%,54%) 100%);
         --gradient-secondary: linear-gradient(135deg, #2B2D42 0%, #3B4254 100%);
         --gradient-success: linear-gradient(135deg, #16A34A 0%, #10B981 100%);
         --glow-shadow: 0 8px 32px rgba(var(--brand-primary-rgb),0.35);
@@ -128,7 +128,14 @@ def apply_custom_css():
     .stButton > button:hover {
         transform: translateY(-2px);
         box-shadow: 0 6px 22px rgba(var(--brand-primary-rgb),0.45);
-        filter: brightness(1.05);
+        filter: brightness(1.02);
+        background: var(--brand-primary) !important;
+        background-image: none !important;
+    }
+    /* Extra specificity to guarantee hover color across dynamic injections */
+    .stButton > button:active, .stButton > button:focus, .stButton > button:focus-visible {
+        background: var(--brand-primary) !important;
+        background-image: none !important;
     }
     
     /* Form styling */

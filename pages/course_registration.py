@@ -7,7 +7,7 @@ import streamlit as st
 from init_db import engine
 from sqlmodel import Session, select, func
 from model import Members, Coaches, Registrations, Courses
-from styles import apply_custom_css, create_welcome_card, create_metric_card, create_section_header
+from styles import apply_custom_css, create_welcome_card, create_section_header
 import pandas as pd
 import plotly.express as px
 from datetime import datetime

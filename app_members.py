@@ -11,6 +11,33 @@ import plotly.graph_objects as go
 
 # Apply styling
 apply_custom_css()
+# Brand hover styling for buttons (applies site-wide; ensures Continue hover matches progress bar color)
+st.markdown("""
+<style>
+/* Base brand color (progress bar color) */
+:root { --brand-color: hsl(350, 98%, 64%); }
+
+/* Default & primary buttons */
+.stButton > button, .stButton button {
+    transition: background .18s ease, color .18s ease, border-color .18s ease;
+    border: 1px solid transparent;
+}
+.stButton > button:hover,
+.stButton > button:focus,
+.stButton > button:active,
+.stButton > button:focus-visible,
+.stButton > button[kind="primary"]:hover,
+.stButton > button[kind="primary"]:focus,
+.stButton > button[kind="primary"]:active {
+    background: var(--brand-color) !important;
+    background-image: none !important;
+    color: #ffffff !important;
+    border-color: var(--brand-color) !important;
+    box-shadow: 0 0 0 2px rgba(255,255,255,0.15);
+    filter: brightness(1.02);
+}
+</style>
+""", unsafe_allow_html=True)
 
 def courses_list():
     """Get list of available courses with enhanced information"""
@@ -38,49 +65,48 @@ def courses_list():
         return df
 
 def display_course_cards(courses_df):
-    """Display courses as modern cards"""
+    """Display courses as dark glass cards (aligned with other entity cards)."""
     if courses_df.empty:
         st.warning("No courses available at the moment.")
         return
-    
+
     cols = st.columns(2)
     for idx, course in courses_df.iterrows():
         with cols[idx % 2]:
-            availability_color = "🟢" if course['availability'] == 'Available' else "🔴"
-            capacity_percentage = (course['current_registrations'] / course['max_capacity']) * 100
-            
-            # Prepare variables outside HTML
+            capacity_percentage = (course['current_registrations'] / course['max_capacity']) * 100 if course['max_capacity'] else 0
             course_name = course['course_name']
             coach_id = course['coach_id']
             time_plan = course['time_plan']
             current_reg = course['current_registrations']
             max_cap = course['max_capacity']
-            
-            # Determine progress bar color
+            status_icon = "🟢" if course['availability'] == 'Available' else "⚪"
+            status_color = "#10B981" if course['availability'] == 'Available' else "#EF4444"
+
             if capacity_percentage < 80:
                 progress_color = "#10B981"
             elif capacity_percentage < 100:
                 progress_color = "#F59E0B"
             else:
                 progress_color = "#EF4444"
-            
+
             st.markdown(f"""
-            <div style="background: white; padding: 1.5rem; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); margin: 1rem 0; border-left: 4px solid #4F46E5;">
-                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
-                    <div>
-                        <h3 style="margin: 0; color: #1F2937; font-size: 1.3rem;">{availability_color} {course_name}</h3>
-                        <p style="color: #6B7280; margin: 0.5rem 0;">Coach ID: {coach_id}</p>
-                        <p style="color: #6B7280; margin: 0; font-size: 0.9rem;">📅 {time_plan}</p>
+            <div style="background: rgba(45,45,45,0.95); padding:1.5rem; border-radius:16px; box-shadow:0 8px 32px rgba(0,0,0,0.3); backdrop-filter:blur(10px); border:1px solid rgba(255,255,255,0.1); margin:1rem 0; color:#ffffff;">
+                <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:1rem;">
+                    <div style="flex:1;">
+                        <h3 style="margin:0 0 .5rem 0; font-size:1.3rem; font-weight:600; letter-spacing:.5px;">{course_name}</h3>
+                        <p style="color:#cccccc; margin:.25rem 0; font-size:.85rem;">🆔 Coach ID: {coach_id}</p>
+                        <p style="color:#cccccc; margin:.25rem 0; font-size:.85rem;">📅 {time_plan}</p>
+                        <div style="margin-top:.75rem; display:flex; flex-wrap:wrap; gap:.5rem; align-items:center;">
+                            <span style="background:{status_color}; color:#ffffff; padding:0.25rem 0.65rem; border-radius:16px; font-size:.7rem; font-weight:500; display:inline-flex; gap:.35rem; align-items:center;">{status_icon} {course['availability']}</span>
+                            <span style="background:rgba(75,75,75,0.8); color:#cccccc; padding:0.25rem 0.65rem; border-radius:16px; font-size:.7rem;">{current_reg}/{max_cap} registered</span>
+                        </div>
+                        <div style="margin-top:.9rem;">
+                            <div style="background:rgba(255,255,255,0.12); border-radius:10px; height:8px;">
+                                <div style="background:{progress_color}; width:{capacity_percentage}%; height:100%; border-radius:10px;"></div>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <div style="background: #F3F4F6; padding: 0.75rem; border-radius: 8px; margin-top: 1rem;">
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <span style="font-size: 0.9rem; color: #6B7280;">Capacity:</span>
-                        <span style="font-weight: 600; color: #1F2937;">{current_reg}/{max_cap}</span>
-                    </div>
-                    <div style="background: #E5E7EB; border-radius: 10px; height: 8px; margin-top: 0.5rem;">
-                        <div style="background: {progress_color}; width: {capacity_percentage}%; height: 100%; border-radius: 10px;"></div>
-                    </div>
+                    <div style="font-size:2.25rem; opacity:.25;">🏋️</div>
                 </div>
             </div>
             """, unsafe_allow_html=True)
@@ -126,10 +152,10 @@ st.markdown(create_welcome_card(
 ), unsafe_allow_html=True)
 
 # Tabs for different sections
-tab1, tab2 = st.tabs(["🎯 Register for Courses", "📊 My Activity"])
+tab1, tab2 = st.tabs(["Register for Courses", "My Activity"])
 
 with tab1:
-    st.markdown(create_section_header("Available Courses", "🏃‍♂️", "Browse and register for available fitness classes"), unsafe_allow_html=True)
+    st.markdown(create_section_header("Available Courses", "", "Browse and register for available fitness classes"), unsafe_allow_html=True)
     
     # Load courses
     if "df" not in st.session_state:
@@ -148,7 +174,7 @@ with tab1:
     st.markdown("---")
     
     # Registration form
-    st.markdown(create_section_header("Quick Registration", "📝", "Register for a course in 3 simple steps"), unsafe_allow_html=True)
+    st.markdown(create_section_header("Quick Registration", "", "Register for a course in 3 simple steps"), unsafe_allow_html=True)
     
     # Progress tracking
     if 'stage' not in st.session_state:
@@ -164,7 +190,7 @@ with tab1:
     if st.session_state.stage == 0:
         st.markdown('<div style="background: white; padding: 1.5rem; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); margin: 1rem 0;">', unsafe_allow_html=True)
         with st.form("personal_details", clear_on_submit=False):
-            st.markdown("#### 👤 Personal Information")
+            st.markdown("#### Personal Information")
             col1, col2 = st.columns(2)
             
             with col1:
@@ -172,7 +198,7 @@ with tab1:
             with col2:
                 id_member = st.text_input("Member ID", placeholder="Enter your member ID", help="Your unique member identification number")
             
-            submitted = st.form_submit_button("➡️ Continue", use_container_width=True)
+            submitted = st.form_submit_button("Continue", use_container_width=True)
         st.markdown('</div>', unsafe_allow_html=True)
 
         if submitted:
@@ -188,7 +214,7 @@ with tab1:
     elif st.session_state.stage == 1:
         st.markdown('<div style="background: white; padding: 1.5rem; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); margin: 1rem 0;">', unsafe_allow_html=True)
         with st.form("choose_program"):
-            st.markdown("#### 🎯 Choose Your Course")
+            st.markdown("#### Choose Your Course")
             courses_table = courses_list()
             
             if not courses_table.empty:
@@ -215,7 +241,7 @@ with tab1:
                     st.session_state.stage = 0
                     st.rerun()
             with col2:
-                submitted = st.form_submit_button("➡️ Continue", type="primary")
+                submitted = st.form_submit_button("Continue", type="primary")
         st.markdown('</div>', unsafe_allow_html=True)
 
         if submitted and course_id:
@@ -226,41 +252,47 @@ with tab1:
 
     elif st.session_state.stage == 2:
         st.markdown('<div style="background: white; padding: 1.5rem; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); margin: 1rem 0;">', unsafe_allow_html=True)
-        st.markdown("#### 📋 Review Your Registration")
-        
+        st.markdown("#### Review Your Registration")
+
         # Display summary
         st.markdown(f"""
-        <div style="background: #F8FAFC; padding: 1.5rem; border-radius: 12px; border-left: 4px solid #4F46E5;">
-            <h4 style="margin-top: 0; color: #1F2937;">Registration Summary</h4>
+        <div style=\"background: #F8FAFC; padding: 1.5rem; border-radius: 12px; border-left: 4px solid #4F46E5;\">
+            <h4 style=\"margin-top: 0; color: #1F2937;\">Registration Summary</h4>
             <p><strong>👤 Name:</strong> {st.session_state.get('name')}</p>
             <p><strong>🆔 Member ID:</strong> {st.session_state.get('id_member')}</p>
             <p><strong>🎯 Course ID:</strong> {st.session_state.get('course_id')}</p>
         </div>
         """, unsafe_allow_html=True)
-        
+
         col1, col2 = st.columns(2)
         with col1:
             if st.button("⬅️ Back to Course Selection"):
                 st.session_state.stage = 1
                 st.rerun()
-        
+
         with col2:
             if st.button("✅ Confirm Registration", type="primary", use_container_width=True):
                 # Process registration
                 with st.spinner("Processing your registration..."):
                     result = registrations(st.session_state.get('id_member'), st.session_state.get('course_id'))
-                    
+
                 if "successfully" in result.lower():
                     st.balloons()
                     st.success(f"🎉 {result}")
                     st.session_state.stage = 0  # Reset for new registration
                 else:
                     st.error(f"❌ {result}")
-        
+
         st.markdown('</div>', unsafe_allow_html=True)
 
 with tab2:
-    st.markdown(create_section_header("My Registration History", "📈", "Track your fitness journey and registration activity"), unsafe_allow_html=True)
+    # Left-aligned header & description (override create_section_header layout for tighter alignment)
+    st.markdown("""
+    <div style='margin: 1.5rem 0 1rem 0;'>
+        <div style='font-size:1.5rem; font-weight:600; color:#F1F5F9; margin:0; letter-spacing:.5px;'>My Registration History</div>
+        <div style='color:#CBD5E1; font-size:0.9rem; margin-top:.35rem;'>Track your fitness journey and registration activity</div>
+    </div>
+    """, unsafe_allow_html=True)
     
     # User input for history
     col1, col2 = st.columns([3, 1])
