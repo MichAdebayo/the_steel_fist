@@ -71,7 +71,8 @@ def create_member_activity_chart(members_df):
     color_discrete_map={'Active': lighter_blue, 'Inactive': darker_blue}
     )
     # Use white text for both to guarantee contrast (darker slice explicitly required; lighter slice still passes contrast)
-    fig.update_traces(textposition='inside', textinfo='percent+label', textfont_color='white')
+    # Show only percentages inside slices; labels remain in legend
+    fig.update_traces(textposition='inside', textinfo='percent', textfont_color='white')
     fig.update_layout(
         plot_bgcolor='rgba(0,0,0,0)',
         paper_bgcolor='rgba(0,0,0,0)',
