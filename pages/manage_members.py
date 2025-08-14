@@ -239,7 +239,7 @@ if not st.session_state.df.empty:
             st.plotly_chart(chart, use_container_width=True)
     
     with col2:
-        st.markdown("### 🔄 Quick Actions")
+        st.markdown("### Quick Actions")
         if st.button("📊 Refresh Data", use_container_width=True):
             st.session_state.df = member_list()
             st.rerun()

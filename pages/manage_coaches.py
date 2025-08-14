@@ -26,48 +26,45 @@ def create_coach_specialty_chart(coaches_df):
         plot_bgcolor='rgba(0,0,0,0)',
         paper_bgcolor='rgba(0,0,0,0)',
         font_family="Inter",
-        title_font_size=16,
-        height=300
+        title_font_size=18,
+        height=430
     )
     
     return fig
 
 def display_coach_cards(coaches_df):
-    """Display coaches as modern cards"""
+    """Display coaches as dark glass cards (aligned with Current Courses styling)."""
     if coaches_df.empty:
         st.warning("No coaches found in the system.")
         return
-    
+
     cols = st.columns(2)
     for idx, coach in coaches_df.iterrows():
         with cols[idx % 2]:
-            # Check if specialty column exists
             specialty = coach.get('specialty', 'Unknown') if 'specialty' in coaches_df.columns else 'Unknown'
-            
-            # Specialty color mapping
             specialty_colors = {
                 'yoga': '#10B981',
-                'pilates': '#8B5CF6', 
+                'pilates': '#8B5CF6',
                 'crossfit': '#EF4444',
                 'calisthenic': '#F59E0B',
                 'body training': '#3B82F6',
                 'athletes trainings': '#6366F1',
                 'zumba': '#EC4899'
             }
-            
-            color = specialty_colors.get(specialty.lower(), '#6B7280')
-            
+            color = specialty_colors.get(str(specialty).lower(), '#6B7280')
+
             st.markdown(f"""
-            <div class="coach-card">
-                <div style="display: flex; justify-content: space-between; align-items: start;">
-                    <div>
-                        <h3 style="margin: 0; color: var(--text-high, #0F172A); font-size: 1.3rem;">👨‍🏫 {coach['coach_name']}</h3>
-                        <p style="color: #6B7280; margin: 0.5rem 0; font-size: 0.9rem;">Coach ID: #{coach['coach_id']}</p>
-                        <span style="background: {color}; color: white; padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.8rem; font-weight: 500;">
-                            🎯 {specialty.title()}
-                        </span>
+            <div style="background: rgba(45, 45, 45, 0.95); padding: 1.5rem; border-radius: 16px; box-shadow: 0 8px 32px rgba(0,0,0,0.3); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); margin: 1rem 0; transition: transform 0.3s ease, box-shadow 0.3s ease; color:#ffffff;">
+                <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:1rem;">
+                    <div style="flex:1;">
+                            <h3 style="margin:0 0 .35rem 0; color:#ffffff; font-size:1.3rem; font-weight:600; letter-spacing:.5px;">{coach['coach_name']}</h3>
+                        <p style="color:#cccccc; margin:.25rem 0; font-size:.9rem;">🏷️ <strong>Specialty:</strong> {specialty.title()}</p>
+                        <p style="color:#cccccc; margin:.25rem 0; font-size:.9rem;">🆔 <strong>ID:</strong> #{coach['coach_id']}</p>
+                        <div style="margin-top:.75rem; display:flex; gap:.5rem; flex-wrap:wrap;">
+                            <span style="background:{color}; color:#ffffff; padding:0.25rem 0.65rem; border-radius:16px; font-size:0.75rem; font-weight:500;">{specialty.title()}</span>
+                        </div>
                     </div>
-                    <div style="font-size: 2.5rem; opacity: 0.3;">💪</div>
+                    <div style="font-size:2rem; opacity:.25;">💪</div>
                 </div>
             </div>
             """, unsafe_allow_html=True)
@@ -84,69 +81,55 @@ if "df" not in st.session_state:
     st.session_state.df = all_coach_info()
 
 # Quick stats
-st.markdown(create_section_header("📊 Coach Overview", "👥", "Current coaching team statistics"), unsafe_allow_html=True)
+st.markdown("### Coach Overview")
 
 if not st.session_state.df.empty:
     col1, col2, col3, col4 = st.columns(4)
-    
+
+    card_style = "background:white; padding:1rem 1rem; border-radius:16px; box-shadow:0 2px 6px rgba(0,0,0,0.05); margin:1rem 0; height:110px; display:flex; align-items:center;"
+    inner_style = "display:flex; justify-content:space-between; width:100%; align-items:baseline; gap:.5rem;"
+    title_style = "color:#0F172A; margin:0; font-size:1.0rem; font-weight:700;"
+    value_style = "color:#374151; font-size:1.3rem; font-weight:600;"
+
     with col1:
         total_coaches = len(st.session_state.df)
-        st.markdown("""
-        <div style="background: white; padding: 1.5rem; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); text-align: center; margin: 1rem 0; height: 140px; display: flex; flex-direction: column; justify-content: center;">
-            <div style="font-size: 2rem; margin-bottom: 1rem;">👨‍🏫</div>
-            <h4 style="color: var(--text-high, #0F172A); margin: 0; font-size: 1.1rem; line-height: 1.2;">Total Coaches</h4>
-            <p style="color: #6B7280; margin: 0.5rem 0 0 0; font-size: 0.9rem; font-weight: 500;">{}</p>
-        </div>
-        """.format(str(total_coaches)), unsafe_allow_html=True)
-    
-    with col2:
-        if 'specialty' in st.session_state.df.columns:
-            specialties = st.session_state.df['specialty'].nunique()
-        else:
-            specialties = 0
-        st.markdown("""
-        <div style="background: white; padding: 1.5rem; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); text-align: center; margin: 1rem 0; height: 140px; display: flex; flex-direction: column; justify-content: center;">
-            <div style="font-size: 2rem; margin-bottom: 1rem;">🎯</div>
-            <h4 style="color: var(--text-high, #0F172A); margin: 0; font-size: 1.1rem; line-height: 1.2;">Specialties</h4>
-            <p style="color: #6B7280; margin: 0.5rem 0 0 0; font-size: 0.9rem; font-weight: 500;">{}</p>
-        </div>
-        """.format(str(specialties)), unsafe_allow_html=True)
-    
-    with col3:
-        if 'specialty' in st.session_state.df.columns and not st.session_state.df.empty:
-            most_common = st.session_state.df['specialty'].mode().iloc[0] if len(st.session_state.df['specialty'].mode()) > 0 else "N/A"
-        else:
-            most_common = "N/A"
-        st.markdown("""
-        <div style="background: white; padding: 1.5rem; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); text-align: center; margin: 1rem 0; height: 140px; display: flex; flex-direction: column; justify-content: center;">
-            <div style="font-size: 2rem; margin-bottom: 1rem;">⭐</div>
-            <h4 style="color: var(--text-high, #0F172A); margin: 0; font-size: 1.1rem; line-height: 1.2;">Popular Specialty</h4>
-            <p style="color: #6B7280; margin: 0.5rem 0 0 0; font-size: 0.9rem; font-weight: 500;">{}</p>
-        </div>
-        """.format(most_common.title() if most_common != "N/A" else "N/A"), unsafe_allow_html=True)
-    
-    with col4:
-        st.markdown("""
-        <div style="background: white; padding: 1.5rem; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); text-align: center; margin: 1rem 0; height: 140px; display: flex; flex-direction: column; justify-content: center;">
-            <div style="font-size: 2rem; margin-bottom: 1rem;">✅</div>
-            <h4 style="color: var(--text-high, #0F172A); margin: 0; font-size: 1.1rem; line-height: 1.2;">System Status</h4>
-            <p style="color: #6B7280; margin: 0.5rem 0 0 0; font-size: 0.9rem; font-weight: 500;">Active</p>
-        </div>
+        st.markdown(f"""
+        <div style=\"{card_style}\">\n  <div style=\"{inner_style}\">\n    <h4 style=\"{title_style}\">Total Coaches</h4>\n    <span style=\"{value_style}\">{total_coaches}</span>\n  </div>\n</div>
         """, unsafe_allow_html=True)
-    
-    # Coach distribution chart
-    col1, col2 = st.columns([2, 1])
-    with col1:
+
+    with col2:
+        specialties = st.session_state.df['specialty'].nunique() if 'specialty' in st.session_state.df.columns else 0
+        st.markdown(f"""
+        <div style=\"{card_style}\">\n  <div style=\"{inner_style}\">\n    <h4 style=\"{title_style}\">Specialties</h4>\n    <span style=\"{value_style}\">{specialties}</span>\n  </div>\n</div>
+        """, unsafe_allow_html=True)
+
+    with col3:
+        most_common = "N/A"
+        if 'specialty' in st.session_state.df.columns and not st.session_state.df.empty:
+            modes = st.session_state.df['specialty'].mode()
+            if len(modes) > 0:
+                most_common = modes.iloc[0].title()
+        st.markdown(f"""
+        <div style=\"{card_style}\">\n  <div style=\"{inner_style}\">\n    <h4 style=\"{title_style}\">Top Specialty</h4>\n    <span style=\"{value_style}\">{most_common}</span>\n  </div>\n</div>
+        """, unsafe_allow_html=True)
+
+    with col4:
+        st.markdown(f"""
+        <div style=\"{card_style}\">\n  <div style=\"{inner_style}\">\n    <h4 style=\"{title_style}\">System Status</h4>\n    <span style=\"{value_style}\">Active</span>\n  </div>\n</div>
+        """, unsafe_allow_html=True)
+
+    # Coach distribution chart + quick actions
+    col_chart, col_actions = st.columns([3, 1])
+    with col_chart:
         chart = create_coach_specialty_chart(st.session_state.df)
         if chart:
             st.plotly_chart(chart, use_container_width=True)
-    
-    with col2:
-        st.markdown("### 🔄 Quick Actions")
+
+    with col_actions:
+        st.markdown("### Quick Actions")
         if st.button("📊 Refresh Data", use_container_width=True):
             st.session_state.df = all_coach_info()
             st.rerun()
-        
         if st.button("📤 Export Data", use_container_width=True):
             st.download_button(
                 label="💾 Download CSV",
@@ -157,13 +140,13 @@ if not st.session_state.df.empty:
             )
 
 # Coach cards display
-st.markdown(create_section_header("👥 Current Coaching Team", "🏋️‍♂️", "Browse and manage individual coaches"), unsafe_allow_html=True)
+st.markdown("### Current Coaching Team")
 display_coach_cards(st.session_state.df)
 
 st.markdown("---")
 
 # Management actions
-st.markdown(create_section_header("🛠️ Coach Management Actions", "⚙️", "Add, modify, or remove coaches from your team"), unsafe_allow_html=True)
+st.markdown("### Coach Management Actions")
 
 # Action buttons
 col1, col2, col3 = st.columns(3)
@@ -229,62 +212,6 @@ if st.session_state.add_form_coach:
                     st.success(f"🎉 {message}")
                     st.session_state.df = all_coach_info()
                     st.session_state.add_form_coach = False
-                    st.rerun()
-                else:
-                    st.error(f"❌ {message}")
-            else:
-                st.error("⚠️ Please fill in all required fields.")
-    
-    st.markdown('</div>', unsafe_allow_html=True)
-
-############################################################################
-# MODIFY COACH FORM
-############################################################################
-if st.session_state.modify_form_coach and not st.session_state.df.empty:
-    st.markdown('<div class="metric-card">', unsafe_allow_html=True)
-    with st.form("modify_form"):
-        st.markdown("#### ✏️ Modify Coach Information")
-        st.markdown("Update coach details and specialty information.")
-        
-        # Coach selection
-        coach_options = {}
-        for _, coach in st.session_state.df.iterrows():
-            display_name = f"{coach['coach_name']} (ID: #{coach['coach_id']}) - {coach['specialty'].title()}"
-            coach_options[display_name] = coach['coach_id']
-        
-        selected_coach_display = st.selectbox("Select Coach to Modify", list(coach_options.keys()))
-        selected_coach_id = coach_options[selected_coach_display]
-        
-        # Get current coach info
-        current_coach = st.session_state.df[st.session_state.df['coach_id'] == selected_coach_id].iloc[0]
-        
-        col1, col2 = st.columns(2)
-        with col1:
-            new_name = st.text_input("New Name", value=current_coach['coach_name'], help="Update coach's name")
-        
-        with col2:
-            specialty_list = ["yoga", "pilates", "crossfit", "calisthenic", "body training", "athletes trainings", "zumba"]
-            current_index = specialty_list.index(current_coach['specialty']) if current_coach['specialty'] in specialty_list else 0
-            new_specialty = st.selectbox("New Specialty", specialty_list, index=current_index, help="Update coach's specialty")
-        
-        col1, col2 = st.columns(2)
-        with col1:
-            if st.form_submit_button("❌ Cancel"):
-                st.session_state.modify_form_coach = False
-                st.rerun()
-        
-        with col2:
-            mod_coach = st.form_submit_button("✅ Update Coach", type="primary")
-
-        if mod_coach:
-            if new_name and new_specialty:
-                with st.spinner("Updating coach information..."):
-                    success, message = modify_coach(selected_coach_id, new_name, new_specialty)
-                
-                if success:
-                    st.success(f"✅ {message}")
-                    st.session_state.df = all_coach_info()
-                    st.session_state.modify_form_coach = False
                     st.rerun()
                 else:
                     st.error(f"❌ {message}")
