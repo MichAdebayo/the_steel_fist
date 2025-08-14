@@ -49,7 +49,16 @@ def login():
             st.markdown("#### 🔐 Select Your Role")
             role = st.selectbox("Choose role:", ROLES[1:], index=0)
             
-            if st.form_submit_button("🚀 Enter System", use_container_width=True, type="primary"):
+            col_login, col_guest = st.columns(2)
+            with col_login:
+                login_submit = st.form_submit_button("🚀 Enter System", use_container_width=True, type="primary")
+            with col_guest:
+                if st.form_submit_button("👀 Demo Mode", use_container_width=True):
+                    st.session_state["role"] = "Member"
+                    st.success("🎉 Welcome to Demo Mode!")
+                    st.rerun()
+            
+            if login_submit:
                 st.session_state["role"] = role
                 st.success(f"🎉 Welcome, {role}!")
                 st.rerun()
@@ -62,40 +71,16 @@ def login():
     
     col1, col2, col3, col4 = st.columns(4)
     with col1:
-        st.markdown("""
-        <div style="background: white; padding: 1.5rem; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); text-align: center; margin: 1rem 0;">
-            <div style="font-size: 2rem; margin-bottom: 1rem;">👥</div>
-            <h4 style="color: #1F2937; margin: 0;">Member Management</h4>
-            <p style="color: #6B7280; margin: 0.5rem 0 0 0; font-size: 0.9rem;">Available</p>
-        </div>
-        """, unsafe_allow_html=True)
+        st.markdown(create_metric_card("Member Management", "👥", "👤"), unsafe_allow_html=True)
         
     with col2:
-        st.markdown("""
-        <div style="background: white; padding: 1.5rem; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); text-align: center; margin: 1rem 0;">
-            <div style="font-size: 2rem; margin-bottom: 1rem;">📅</div>
-            <h4 style="color: #1F2937; margin: 0;">Course Scheduling</h4>
-            <p style="color: #6B7280; margin: 0.5rem 0 0 0; font-size: 0.9rem;">Active</p>
-        </div>
-        """, unsafe_allow_html=True)
+        st.markdown(create_metric_card("Course Scheduling", "📅", "🗓️"), unsafe_allow_html=True)
         
     with col3:
-        st.markdown("""
-        <div style="background: white; padding: 1.5rem; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); text-align: center; margin: 1rem 0;">
-            <div style="font-size: 2rem; margin-bottom: 1rem;">🏋️‍♂️</div>
-            <h4 style="color: #1F2937; margin: 0;">Coach Management</h4>
-            <p style="color: #6B7280; margin: 0.5rem 0 0 0; font-size: 0.9rem;">Ready</p>
-        </div>
-        """, unsafe_allow_html=True)
+        st.markdown(create_metric_card("Coach Management", "🏋️‍♂️", "💪"), unsafe_allow_html=True)
         
     with col4:
-        st.markdown("""
-        <div style="background: white; padding: 1.5rem; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); text-align: center; margin: 1rem 0;">
-            <div style="font-size: 2rem; margin-bottom: 1rem;">📊</div>
-            <h4 style="color: #1F2937; margin: 0;">Analytics Dashboard</h4>
-            <p style="color: #6B7280; margin: 0.5rem 0 0 0; font-size: 0.9rem;">Live</p>
-        </div>
-        """, unsafe_allow_html=True)
+        st.markdown(create_metric_card("Analytics Dashboard", "📊", "📈"), unsafe_allow_html=True)
 
 def logout():
     """Enhanced Logout Functionality"""

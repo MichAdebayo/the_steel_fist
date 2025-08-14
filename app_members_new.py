@@ -20,9 +20,10 @@ def courses_list():
         data = []
         for row in results:
             # Count current registrations
-            reg_stmt = select(Registrations).where(Registrations.course_id == str(row.course_id))
-            reg_results = session.exec(reg_stmt).all()
-            reg_count = len(reg_results)
+            reg_count = len(session.exec(
+                select(Registrations)
+                .where(Registrations.course_id == str(row.course_id))
+            ).all())
             
             data.append({
                 'course_id': row.course_id,
@@ -51,11 +52,11 @@ def display_course_cards(courses_df):
             
             st.markdown(f"""
             <div class="course-card">
-                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
+                <div style="display: flex; justify-content: between; align-items: start; margin-bottom: 1rem;">
                     <div>
                         <h3 style="margin: 0; color: #1F2937; font-size: 1.3rem;">{availability_color} {course['course_name']}</h3>
                         <p style="color: #6B7280; margin: 0.5rem 0;">Coach ID: {course['coach_id']}</p>
-                        <p style="color: #6B7280; margin: 0; font-size: 0.9rem;">📅 {course['time_plan']}</p>
+                        <p style="color: #6B7280; margin: 0; font-size: 0.9rem;">📅 {course['time_plan'].strftime('%Y-%m-%d %H:%M')}</p>
                     </div>
                 </div>
                 <div style="background: #F3F4F6; padding: 0.75rem; border-radius: 8px; margin-top: 1rem;">
