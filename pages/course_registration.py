@@ -158,42 +158,47 @@ if not courses_df.empty:
     with col1:
         total_courses = len(courses_df)
         st.markdown("""
-        <div style="background: white; padding: 1.5rem; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); text-align: center; margin: 1rem 0;">
+        <div style="background: white; padding: 1.5rem; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); text-align: center; margin: 1rem 0; height: 140px; display: flex; flex-direction: column; justify-content: center;">
             <div style="font-size: 2rem; margin-bottom: 1rem;">🎯</div>
-            <h4 style="color: #1F2937; margin: 0;">Total Courses</h4>
-            <p style="color: #6B7280; margin: 0.5rem 0 0 0; font-size: 0.9rem;">{}</p>
+            <h4 style="color: #1F2937; margin: 0; font-size: 1.1rem; line-height: 1.2;">Total Courses</h4>
+            <p style="color: #6B7280; margin: 0.5rem 0 0 0; font-size: 0.9rem; font-weight: 500;">{}</p>
         </div>
         """.format(str(total_courses)), unsafe_allow_html=True)
     
     with col2:
         available_courses = len(courses_df[courses_df['availability'] == 'Available'])
         st.markdown("""
-        <div style="background: white; padding: 1.5rem; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); text-align: center; margin: 1rem 0;">
+        <div style="background: white; padding: 1.5rem; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); text-align: center; margin: 1rem 0; height: 140px; display: flex; flex-direction: column; justify-content: center;">
             <div style="font-size: 2rem; margin-bottom: 1rem;">✅</div>
-            <h4 style="color: #1F2937; margin: 0;">Available Now</h4>
-            <p style="color: #6B7280; margin: 0.5rem 0 0 0; font-size: 0.9rem;">{}</p>
+            <h4 style="color: #1F2937; margin: 0; font-size: 1.1rem; line-height: 1.2;">Available Now</h4>
+            <p style="color: #6B7280; margin: 0.5rem 0 0 0; font-size: 0.9rem; font-weight: 500;">{}</p>
         </div>
         """.format(str(available_courses)), unsafe_allow_html=True)
     
     with col3:
-        total_spots = courses_df['max_capacity'].sum()
-        taken_spots = courses_df['current_participants'].sum()
-        available_spots = total_spots - taken_spots
+        # Calculate available spots with error handling
+        try:
+            total_spots = courses_df['max_capacity'].sum() if 'max_capacity' in courses_df.columns else 0
+            taken_spots = courses_df['current_participants'].sum() if 'current_participants' in courses_df.columns else 0
+            available_spots = max(0, total_spots - taken_spots)  # Ensure non-negative
+        except:
+            available_spots = 0
+        
         st.markdown("""
-        <div style="background: white; padding: 1.5rem; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); text-align: center; margin: 1rem 0;">
+        <div style="background: white; padding: 1.5rem; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); text-align: center; margin: 1rem 0; height: 140px; display: flex; flex-direction: column; justify-content: center;">
             <div style="font-size: 2rem; margin-bottom: 1rem;">🪑</div>
-            <h4 style="color: #1F2937; margin: 0;">Available Spots</h4>
-            <p style="color: #6B7280; margin: 0.5rem 0 0 0; font-size: 0.9rem;">{}</p>
+            <h4 style="color: #1F2937; margin: 0; font-size: 1.1rem; line-height: 1.2;">Available Spots</h4>
+            <p style="color: #6B7280; margin: 0.5rem 0 0 0; font-size: 0.9rem; font-weight: 500;">{}</p>
         </div>
         """.format(str(available_spots)), unsafe_allow_html=True)
     
     with col4:
         specialties = courses_df['coach_specialty'].nunique()
         st.markdown("""
-        <div style="background: white; padding: 1.5rem; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); text-align: center; margin: 1rem 0;">
+        <div style="background: white; padding: 1.5rem; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); text-align: center; margin: 1rem 0; height: 140px; display: flex; flex-direction: column; justify-content: center;">
             <div style="font-size: 2rem; margin-bottom: 1rem;">🏷️</div>
-            <h4 style="color: #1F2937; margin: 0;">Specialties</h4>
-            <p style="color: #6B7280; margin: 0.5rem 0 0 0; font-size: 0.9rem;">{}</p>
+            <h4 style="color: #1F2937; margin: 0; font-size: 1.1rem; line-height: 1.2;">Specialties</h4>
+            <p style="color: #6B7280; margin: 0.5rem 0 0 0; font-size: 0.9rem; font-weight: 500;">{}</p>
         </div>
         """.format(str(specialties)), unsafe_allow_html=True)
     
