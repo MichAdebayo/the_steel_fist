@@ -54,26 +54,29 @@ def member_list():
         return pd.DataFrame(columns=['member_id', 'member_name', 'email', 'access_card_id', 'total_registrations', 'status'])
 
 def create_member_activity_chart(members_df):
-    """Create a chart showing member activity distribution"""
+    """Create a chart showing member activity distribution with brand colors"""
     if members_df.empty or 'status' not in members_df.columns:
         return None
-    
+
     activity_counts = members_df['status'].value_counts()
-    
+
+    # Brand-aligned colors: Active -> brand primary, Inactive -> soft neutral
     fig = px.pie(
         values=activity_counts.values,
         names=activity_counts.index,
         title="Member Activity Status",
-        color_discrete_map={'Active': '#10B981', 'Inactive': '#6B7280'}
+        color_discrete_map={'Active': '#EF233C', 'Inactive': '#9CA3AF'}
     )
+    fig.update_traces(textposition='inside', textinfo='percent+label')
     fig.update_layout(
         plot_bgcolor='rgba(0,0,0,0)',
         paper_bgcolor='rgba(0,0,0,0)',
         font_family="Inter",
-        title_font_size=16,
-        height=300
+        title_font_size=18,
+        height=430,
+        legend_title_text="Status"
     )
-    
+
     return fig
 
 def display_member_cards(members_df):
@@ -178,7 +181,7 @@ for col in required_columns:
         st.session_state.df[col] = []
 
 # Quick stats
-st.markdown(create_section_header("📊 Member Overview", "👥", "Current membership statistics and activity"), unsafe_allow_html=True)
+st.markdown(create_section_header("Member Overview", "", "Current membership statistics and activity"), unsafe_allow_html=True)
 
 if not st.session_state.df.empty:
     col1, col2, col3, col4 = st.columns(4)
@@ -186,10 +189,9 @@ if not st.session_state.df.empty:
     with col1:
         total_members = len(st.session_state.df)
         st.markdown("""
-        <div style="background: white; padding: 1.5rem; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); text-align: center; margin: 1rem 0; height: 140px; display: flex; flex-direction: column; justify-content: center;">
-            <div style="font-size: 2rem; margin-bottom: 1rem;">👥</div>
-            <h4 style="color: var(--text-high, #0F172A); margin: 0; font-size: 1.1rem; line-height: 1.2;">Total Members</h4>
-            <p style="color: #6B7280; margin: 0.5rem 0 0 0; font-size: 0.9rem; font-weight: 500;">{}</p>
+        <div style="background: white; padding: 1.75rem; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); text-align: center; margin: 1rem 0; height: 190px; display: flex; flex-direction: column; justify-content: space-between;">
+            <h4 style="color: var(--text-high, #0F172A); margin: 0; font-size: 1.4rem; line-height: 1.2; font-weight: 700;">Total Members</h4>
+            <p style="color: #6B7280; margin: 0; font-size: 1.6rem; font-weight: 600;">{}</p>
         </div>
         """.format(str(total_members)), unsafe_allow_html=True)
     
@@ -199,10 +201,9 @@ if not st.session_state.df.empty:
         else:
             active_members = 0
         st.markdown("""
-        <div style="background: white; padding: 1.5rem; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); text-align: center; margin: 1rem 0; height: 140px; display: flex; flex-direction: column; justify-content: center;">
-            <div style="font-size: 2rem; margin-bottom: 1rem;">🟢</div>
-            <h4 style="color: var(--text-high, #0F172A); margin: 0; font-size: 1.1rem; line-height: 1.2;">Active Members</h4>
-            <p style="color: #6B7280; margin: 0.5rem 0 0 0; font-size: 0.9rem; font-weight: 500;">{}</p>
+        <div style="background: white; padding: 1.75rem; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); text-align: center; margin: 1rem 0; height: 190px; display: flex; flex-direction: column; justify-content: space-between;">
+            <h4 style="color: var(--text-high, #0F172A); margin: 0; font-size: 1.4rem; line-height: 1.2; font-weight: 700;">Active Members</h4>
+            <p style="color: #6B7280; margin: 0; font-size: 1.6rem; font-weight: 600;">{}</p>
         </div>
         """.format(str(active_members)), unsafe_allow_html=True)
     
@@ -212,10 +213,9 @@ if not st.session_state.df.empty:
         else:
             avg_registrations = 0
         st.markdown("""
-        <div style="background: white; padding: 1.5rem; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); text-align: center; margin: 1rem 0; height: 140px; display: flex; flex-direction: column; justify-content: center;">
-            <div style="font-size: 2rem; margin-bottom: 1rem;">📊</div>
-            <h4 style="color: var(--text-high, #0F172A); margin: 0; font-size: 1.1rem; line-height: 1.2;">Avg Registrations</h4>
-            <p style="color: #6B7280; margin: 0.5rem 0 0 0; font-size: 0.9rem; font-weight: 500;">{}</p>
+        <div style="background: white; padding: 1.75rem; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); text-align: center; margin: 1rem 0; height: 190px; display: flex; flex-direction: column; justify-content: space-between;">
+            <h4 style="color: var(--text-high, #0F172A); margin: 0; font-size: 1.4rem; line-height: 1.2; font-weight: 700;">Avg Registrations</h4>
+            <p style="color: #6B7280; margin: 0; font-size: 1.6rem; font-weight: 600;">{}</p>
         </div>
         """.format(f"{avg_registrations:.1f}"), unsafe_allow_html=True)
     
@@ -226,10 +226,9 @@ if not st.session_state.df.empty:
             active_members = 0
         engagement_rate = (active_members / total_members * 100) if total_members > 0 else 0
         st.markdown("""
-        <div style="background: white; padding: 1.5rem; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); text-align: center; margin: 1rem 0; height: 140px; display: flex; flex-direction: column; justify-content: center;">
-            <div style="font-size: 2rem; margin-bottom: 1rem;">⚡</div>
-            <h4 style="color: var(--text-high, #0F172A); margin: 0; font-size: 1.1rem; line-height: 1.2;">Engagement Rate</h4>
-            <p style="color: #6B7280; margin: 0.5rem 0 0 0; font-size: 0.9rem; font-weight: 500;">{}</p>
+        <div style="background: white; padding: 1.75rem; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); text-align: center; margin: 1rem 0; height: 190px; display: flex; flex-direction: column; justify-content: space-between;">
+            <h4 style="color: var(--text-high, #0F172A); margin: 0; font-size: 1.4rem; line-height: 1.2; font-weight: 700;">Engagement Rate</h4>
+            <p style="color: #6B7280; margin: 0; font-size: 1.6rem; font-weight: 600;">{}</p>
         </div>
         """.format(f"{engagement_rate:.1f}%"), unsafe_allow_html=True)
     
@@ -256,7 +255,7 @@ if not st.session_state.df.empty:
             )
 
 # Member cards display
-st.markdown(create_section_header("👥 Current Members", "🏃‍♂️", "Browse and manage individual member accounts"), unsafe_allow_html=True)
+st.markdown(create_section_header("Current Members", "", "Browse and manage individual member accounts"), unsafe_allow_html=True)
 display_member_cards(st.session_state.df)
 
 st.markdown("---")

@@ -59,36 +59,36 @@ if not registrations_df.empty:
     with col1:
         total_registrations = len(registrations_df)
         st.markdown("""
-        <div style="background: white; padding: 1.75rem; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); text-align: center; margin: 1rem 0; height: 160px; display: flex; flex-direction: column; justify-content: flex-start;">
-            <h4 style="color: var(--brand-primary); margin: 0 0 0.75rem 0; font-size: 1.4rem; line-height: 1.2; font-weight: 700;">Total Registrations</h4>
-            <p style="color: var(--brand-primary); margin: 0; font-size: 1.6rem; font-weight: 700;">{}</p>
+        <div style=\"background: white; padding: 1.75rem; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); text-align: center; margin: 1rem 0; height: 190px; display: flex; flex-direction: column; justify-content: space-between;\">
+            <h4 style=\"color: var(--text-high, #0F172A); margin: 0; font-size: 1.4rem; line-height: 1.2; font-weight: 700;\">Total Registrations</h4>
+            <p style=\"color: #6B7280; margin: 0; font-size: 1.6rem; font-weight: 600;\">{}</p>
         </div>
         """.format(str(total_registrations)), unsafe_allow_html=True)
     
     with col2:
         unique_members = registrations_df['member_name'].nunique()
         st.markdown("""
-        <div style="background: white; padding: 1.75rem; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); text-align: center; margin: 1rem 0; height: 160px; display: flex; flex-direction: column; justify-content: flex-start;">
-            <h4 style="color: var(--brand-primary); margin: 0 0 0.75rem 0; font-size: 1.4rem; line-height: 1.2; font-weight: 700;">Active Members</h4>
-            <p style="color: var(--brand-primary); margin: 0; font-size: 1.6rem; font-weight: 700;">{}</p>
+        <div style=\"background: white; padding: 1.75rem; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); text-align: center; margin: 1rem 0; height: 190px; display: flex; flex-direction: column; justify-content: space-between;\">
+            <h4 style=\"color: var(--text-high, #0F172A); margin: 0; font-size: 1.4rem; line-height: 1.2; font-weight: 700;\">Active Members</h4>
+            <p style=\"color: #6B7280; margin: 0; font-size: 1.6rem; font-weight: 600;\">{}</p>
         </div>
         """.format(str(unique_members)), unsafe_allow_html=True)
     
     with col3:
         unique_courses = registrations_df['course_name'].nunique()
         st.markdown("""
-        <div style="background: white; padding: 1.75rem; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); text-align: center; margin: 1rem 0; height: 160px; display: flex; flex-direction: column; justify-content: flex-start;">
-            <h4 style="color: var(--brand-primary); margin: 0 0 0.75rem 0; font-size: 1.4rem; line-height: 1.2; font-weight: 700;">Courses with Registrations</h4>
-            <p style="color: var(--brand-primary); margin: 0; font-size: 1.6rem; font-weight: 700;">{}</p>
+        <div style=\"background: white; padding: 1.75rem; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); text-align: center; margin: 1rem 0; height: 190px; display: flex; flex-direction: column; justify-content: space-between;\">
+            <h4 style=\"color: var(--text-high, #0F172A); margin: 0; font-size: 1.4rem; line-height: 1.2; font-weight: 700;\">Courses with Registrations</h4>
+            <p style=\"color: #6B7280; margin: 0; font-size: 1.6rem; font-weight: 600;\">{}</p>
         </div>
         """.format(str(unique_courses)), unsafe_allow_html=True)
     
     with col4:
         avg_per_member = total_registrations / unique_members if unique_members > 0 else 0
         st.markdown("""
-        <div style="background: white; padding: 1.75rem; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); text-align: center; margin: 1rem 0; height: 160px; display: flex; flex-direction: column; justify-content: flex-start;">
-            <h4 style="color: var(--brand-primary); margin: 0 0 0.75rem 0; font-size: 1.4rem; line-height: 1.2; font-weight: 700;">Avg per Member</h4>
-            <p style="color: var(--brand-primary); margin: 0; font-size: 1.6rem; font-weight: 700;">{}</p>
+        <div style=\"background: white; padding: 1.75rem; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); text-align: center; margin: 1rem 0; height: 190px; display: flex; flex-direction: column; justify-content: space-between;\">
+            <h4 style=\"color: var(--text-high, #0F172A); margin: 0; font-size: 1.4rem; line-height: 1.2; font-weight: 700;\">Avg per Member</h4>
+            <p style=\"color: #6B7280; margin: 0; font-size: 1.6rem; font-weight: 600;\">{}</p>
         </div>
         """.format(f"{avg_per_member:.1f}"), unsafe_allow_html=True)
     
