@@ -5,7 +5,7 @@
     <span>Steel Fist Gym Management Platform</span>
 </h1>
 
-<p style="max-width:860px; margin:0.75rem auto 0; font-size:1.05rem; line-height:1.45;">
+<p style="align:center; max-width:860px; margin:0.75rem auto 0; font-size:1.05rem; line-height:1.45;">
 Unified management & self‑service portal for a modern gym: members, coaches, courses, registrations & analytics — built with <strong>Streamlit</strong> + <strong>SQLModel</strong>.
 </p>
 
