@@ -1,6 +1,14 @@
 import streamlit as st
 from styles import apply_custom_css, create_welcome_card
 
+# Global page config (set once) - avoids multiple calls error and ensures header visible for navigation
+st.set_page_config(
+    page_title="Steel Fist Gym",
+    page_icon="🏋️‍♂️",
+    layout="wide",
+    initial_sidebar_state="collapsed"
+)
+
 # Initialize session state for role
 if "role" not in st.session_state:
     st.session_state["role"] = None
@@ -23,16 +31,19 @@ def login():
     Returns:
         None
     """
-    # Page configuration for login only
-    st.set_page_config(
-        page_title="Steel Fist Gym - Login",
-        page_icon="🏋️‍♂️",
-        layout="wide",
-        initial_sidebar_state="collapsed"
-    )
-    
     # Apply custom styling
     apply_custom_css()
+    # Ensure any previous sidebar content is cleared for a clean login view
+    st.sidebar.empty()
+    # Hide header (hamburger + toolbar) AND completely hide sidebar container on landing (pre-login)
+    # Sidebar sometimes persists from previous session unless explicitly hidden; we target its testid.
+    st.markdown("""
+    <style>
+    header {visibility:hidden;}
+    section[data-testid="stSidebar"] {display:none !important;}
+    div[data-testid="stSidebarNav"] {display:none !important;}
+    </style>
+    """, unsafe_allow_html=True)
     
     # Header with gym branding
     st.markdown("""
@@ -131,14 +142,8 @@ def logout():
 if st.session_state["role"] is None:
     login()
 else:
-    # Page configuration for logged-in users
-    st.set_page_config(
-        page_title="Steel Fist Gym",
-        page_icon="🏋️‍♂️",
-        layout="wide",
-        initial_sidebar_state="expanded"
-    )
-    
+    # Expand sidebar after login
+    st.sidebar.empty()
     # Apply custom styling
     apply_custom_css()
     

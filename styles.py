@@ -46,10 +46,10 @@ def apply_custom_css():
         --focus-ring: 0 0 0 3px rgba(var(--brand-primary-rgb),0.35);
     }
     
-    /* Hide Streamlit default elements */
+    /* Hide some default elements (keep header for navigation) */
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
-    header {visibility: hidden;}
+    /* header kept visible to allow Streamlit navigation components */
     .stDeployButton {display:none;}
     
     /* Main container styling - Dark Theme */
