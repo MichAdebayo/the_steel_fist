@@ -153,13 +153,6 @@ Logically dead / legacy files (e.g., backups) can be pruned once verified obsole
 
 Feel free to open issues for: bugs, UX polish, performance, test coverage.
 
-### Potential Roadmap
-- Authentication backend (real users instead of role selector)
-- Pagination & search across large member/course lists
-- Attendance tracking & no‑show metrics
-- Export analytics (CSV / PDF)
-- Automated tests (pytest + Streamlit component harness)
-
 ---
 
 ## License
