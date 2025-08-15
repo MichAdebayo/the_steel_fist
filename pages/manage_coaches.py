@@ -1,16 +1,23 @@
 # Modern Coach Management Interface
 import streamlit as st
-from utils import all_coach_info, add_coach, delete_coach, modify_coach
-from styles import apply_custom_css, create_welcome_card, create_metric_card, create_section_header
+from utils import all_coach_info, add_coach, delete_coach
+from styles import apply_custom_css, create_welcome_card
 import plotly.express as px
-import plotly.graph_objects as go
-import pandas as pd
 
 # Apply modern styling
 apply_custom_css()
 
 def create_coach_specialty_chart(coaches_df):
-    """Create a pie chart showing coach distribution by specialty"""
+    """Generates a pie chart showing the distribution of coach specialties.
+
+    This function creates a pie chart visualizing how coaches are distributed across different specialties. It returns a Plotly figure object or None if data is insufficient.
+
+    Args:
+        coaches_df (pd.DataFrame): DataFrame containing coach data with a 'specialty' column.
+
+    Returns:
+        plotly.graph_objs.Figure or None: Pie chart figure of coach specialty distribution, or None if input is invalid.
+    """
     if coaches_df.empty or 'specialty' not in coaches_df.columns:
         return None
     
@@ -33,7 +40,16 @@ def create_coach_specialty_chart(coaches_df):
     return fig
 
 def display_coach_cards(coaches_df):
-    """Display coaches as dark glass cards (aligned with Current Courses styling)."""
+    """Displays coach information cards with specialty indicators.
+
+    This function presents coach details in a card format, showing key information and specialty for each coach. It handles missing data gracefully and displays coaches in a two-column layout.
+
+    Args:
+        coaches_df (pd.DataFrame): DataFrame containing coach data.
+
+    Returns:
+        None
+    """
     if coaches_df.empty:
         st.warning("No coaches found in the system.")
         return
