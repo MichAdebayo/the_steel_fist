@@ -8,7 +8,16 @@ import random
 
 
 def all_coach_info():  
-    """Retrieve all coaches information from the database."""
+    """Displays a browser for available courses with filtering and registration options.
+
+    This function presents available courses in a card format, allowing users to filter, sort, and register for courses. It handles empty and filtered data gracefully and provides interactive registration buttons.
+
+    Args:
+        courses_df (pd.DataFrame): DataFrame containing available course data.
+
+    Returns:
+        None
+    """
     try:
         with Session(engine) as session:
             stmt = select(Coaches)
@@ -23,7 +32,17 @@ def all_coach_info():
 
 
 def add_coach(name, specialty):
-    """Add a new coach to the database with the specified name and specialty."""
+    """Adds a new coach to the database with the given name and specialty.
+
+    This function creates a new coach record in the database and returns a success status and message. It handles database errors gracefully.
+
+    Args:
+        name (str): The full name of the coach.
+        specialty (str): The specialty area of the coach.
+
+    Returns:
+        tuple: (bool, str) indicating success status and a descriptive message.
+    """
     try:
         with Session(engine) as session:
             new_coach = Coaches(coach_name=name, specialty=specialty)
@@ -37,7 +56,16 @@ def add_coach(name, specialty):
 
 
 def delete_coach(coach_id):
-    """Delete a coach from the database by their unique ID."""
+    """Deletes a coach from the database by their unique ID.
+
+    This function removes a coach record from the database using the provided coach ID and returns a success status and message. It handles cases where the coach does not exist and database errors.
+
+    Args:
+        coach_id (int): The unique identifier of the coach to delete.
+
+    Returns:
+        tuple: (bool, str) indicating success status and a descriptive message.
+    """
     try:
         with Session(engine) as session:
             statement = select(Coaches).where(Coaches.coach_id == coach_id)
@@ -55,7 +83,18 @@ def delete_coach(coach_id):
 
 
 def modify_coach(coach_id, new_name=None, new_specialty=None):
-    """Modify a coach's name and/or specialty by their unique ID."""
+    """Modifies a coach's name and/or specialty in the database.
+
+    This function updates the name and/or specialty of a coach identified by their unique ID. It returns a success status and message, handling cases where the coach does not exist and database errors.
+
+    Args:
+        coach_id (int): The unique identifier of the coach to modify.
+        new_name (str, optional): The new name for the coach.
+        new_specialty (str, optional): The new specialty for the coach.
+
+    Returns:
+        tuple: (bool, str) indicating success status and a descriptive message.
+    """
     try:
         with Session(engine) as session:
             # Retrieve the coach to modify
@@ -81,7 +120,16 @@ def modify_coach(coach_id, new_name=None, new_specialty=None):
 
 
 def select_course(course_name):
-    """Select courses by course name."""
+    """Retrieves course records from the database by course name.
+
+    This function returns a list of course records that match the provided course name. It is used to access course details for further operations.
+
+    Args:
+        course_name (str): The name of the course to search for.
+
+    Returns:
+        list: List of course records matching the course name.
+    """
     with Session(engine) as session:
         statement = select(Courses).where(Courses.course_name == course_name)
         results = session.exec(statement)
@@ -90,7 +138,18 @@ def select_course(course_name):
 
 
 def add_member(name, mail, access):
-    """Add a new member with an access card to the database."""
+    """Adds a new member to the database with the given name, email, and access card.
+
+    This function creates a new member record and associated access card in the database. It returns a success message or an error message if the operation fails.
+
+    Args:
+        name (str): The full name of the member.
+        mail (str): The email address of the member.
+        access (str): The access card identifier for the member.
+
+    Returns:
+        str: Success or error message describing the result.
+    """
     try:
         with Session(engine) as session:
             # Generate a random 6-digit number for the access card
@@ -107,7 +166,19 @@ def add_member(name, mail, access):
 
 
 def add_course(name, date, max_participants, coach_id):
-    """Add a new course to the database."""
+    """Adds a new course to the database with the given details.
+
+    This function creates a new course record in the database using the provided name, date, maximum participants, and coach ID. It returns a success message or an error message if the operation fails.
+
+    Args:
+        name (str): The name of the course.
+        date (str): The date and time of the course in ISO format.
+        max_participants (int): The maximum number of participants allowed.
+        coach_id (int): The unique identifier of the coach assigned to the course.
+
+    Returns:
+        str: Success or error message describing the result.
+    """
     try:
         with Session(engine) as session:
             date_obj = datetime.datetime.fromisoformat(date)
@@ -125,7 +196,16 @@ def add_course(name, date, max_participants, coach_id):
 
 
 def delete_member(name):
-    """Delete a member from the database by name."""
+    """Deletes a member from the database by their name.
+
+    This function removes a member record from the database using the provided member name and returns a success or error message. It handles cases where the member does not exist and database errors.
+
+    Args:
+        name (str): The name of the member to delete.
+
+    Returns:
+        str: Success or error message describing the result.
+    """
     try:
         with Session(engine) as session:
             statement = select(Members).where(Members.member_name == name)
@@ -142,7 +222,16 @@ def delete_member(name):
 
 
 def delete_course(number):
-    """Delete a course from the database by course ID."""
+    """Deletes a course from the database by its unique ID.
+
+    This function removes a course record from the database using the provided course ID and returns a success or error message. It handles cases where the course does not exist and database errors.
+
+    Args:
+        number (int): The unique identifier of the course to delete.
+
+    Returns:
+        str: Success or error message describing the result.
+    """
     try:
         with Session(engine) as session:
             statement = select(Courses).where(Courses.course_id == number)
@@ -159,7 +248,18 @@ def delete_course(number):
 
 
 def update_members(member_id, new_name=None, new_mail=None):
-    """Update member information by member ID."""
+    """Updates a member's name and/or email in the database.
+
+    This function modifies the name and/or email of a member identified by their unique ID. It returns a success message or an error message, handling cases where the member does not exist or no fields are provided for update.
+
+    Args:
+        member_id (int): The unique identifier of the member to update.
+        new_name (str, optional): The new name for the member.
+        new_mail (str, optional): The new email address for the member.
+
+    Returns:
+        str: Success or error message describing the result.
+    """
     try:
         with Session(engine) as session:
             # Prepare the fields to update dynamically
@@ -192,7 +292,17 @@ def update_members(member_id, new_name=None, new_mail=None):
 
 
 def registrations(id_member, id_course):
-    """Register a member for a course."""
+    """Registers a member for a course in the database.
+
+    This function creates a new registration for a member in a specified course, checking for member and course existence, course capacity, and duplicate registrations. It returns a success or error message describing the result.
+
+    Args:
+        id_member (int or str): The unique identifier of the member to register.
+        id_course (int or str): The unique identifier of the course to register for.
+
+    Returns:
+        str: Success or error message describing the result.
+    """
     try:
         with Session(engine) as session:
             # Convert inputs to appropriate types
@@ -247,7 +357,16 @@ def registrations(id_member, id_course):
 
 
 def historic_number_registrations(name):
-    """Get the number of registrations for a member by name."""
+    """Returns the total number of registrations for a member by name.
+
+    This function retrieves the count of all course registrations associated with a member's name. It returns 0 if the member does not exist or if an error occurs.
+
+    Args:
+        name (str): The name of the member.
+
+    Returns:
+        int: The total number of registrations for the member.
+    """
     try:
         with Session(engine) as session:
             statement = select(Members.member_id).where(Members.member_name == name)
@@ -267,7 +386,16 @@ def historic_number_registrations(name):
 
 
 def historic_registrations(name):
-    """Get all registrations for a member by name."""
+    """Returns a list of all registration records for a member by name.
+
+    This function retrieves all course registration records associated with a member's name. It returns an empty list if the member does not exist or if an error occurs.
+
+    Args:
+        name (str): The name of the member.
+
+    Returns:
+        list: List of registration records for the member.
+    """
     try:
         with Session(engine) as session:
             statement = select(Members.member_id).where(Members.member_name == name)
@@ -285,5 +413,15 @@ def historic_registrations(name):
 
 
 def add_coaches(name, specialty):
-    """Alias for add_coach function to maintain compatibility."""
+    """Adds a new coach to the database using the provided name and specialty.
+
+    This function is a wrapper for add_coach and returns the result of adding a coach to the database.
+
+    Args:
+        name (str): The full name of the coach.
+        specialty (str): The specialty area of the coach.
+
+    Returns:
+        tuple: (bool, str) indicating success status and a descriptive message.
+    """
     return add_coach(name, specialty)
