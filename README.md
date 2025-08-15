@@ -159,9 +159,6 @@ Feel free to open issues for: bugs, UX polish, performance, test coverage.
 The project is licensed under the MIT license.
 
 ## Authors
-Michael Adebayo ([@MichAdebayo](https://github.com/MichAdebayo))  
-Ludivine Raby ([@LudivineRB](https://github.com/LudivineRB))
+**Original creators:** Michael Adebayo ([@MichAdebayo](https://github.com/MichAdebayo)) and Ludivine Raby ([@LudivineRB](https://github.com/LudivineRB))
 
----
-
-> Built for clarity, speed, and maintainability — contributions welcome.
+**Maintainer of this fork:** Michael Adebayo ([@MichAdebayo](https://github.com/MichAdebayo)) 
