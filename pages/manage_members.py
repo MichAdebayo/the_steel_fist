@@ -1,15 +1,12 @@
 # Modern Member Management Interface
 import streamlit as st
 from init_db import engine
-from sqlmodel import Session, select, func, text
+from sqlmodel import Session, select, func
 from sqlalchemy import cast, String, literal_column
-from model import Members, Coaches, Accesscards, Registrations, Courses
-from utils import add_member, select_course, add_course, delete_course, delete_member, update_members
+from utils import add_member, delete_member, update_members
 import pandas as pd
-import datetime
-from styles import apply_custom_css, create_welcome_card, create_metric_card, create_section_header
+from styles import apply_custom_css, create_welcome_card, create_section_header
 import plotly.express as px
-import plotly.graph_objects as go
 
 # Apply modern styling
 apply_custom_css()
@@ -54,7 +51,16 @@ def member_list():
         return pd.DataFrame(columns=['member_id', 'member_name', 'email', 'access_card_id', 'total_registrations', 'status'])
 
 def create_member_activity_chart(members_df):
-    """Create a chart showing member activity distribution with brand colors"""
+    """Generates a pie chart visualizing member activity status.
+
+    This function creates a pie chart showing the distribution of active and inactive members. It returns a Plotly figure object or None if data is insufficient.
+
+    Args:
+        members_df (pd.DataFrame): DataFrame containing member data with a 'status' column.
+
+    Returns:
+        plotly.graph_objs.Figure or None: Pie chart figure of member activity status, or None if input is invalid.
+    """
     if members_df.empty or 'status' not in members_df.columns:
         return None
 
@@ -85,7 +91,16 @@ def create_member_activity_chart(members_df):
     return fig
 
 def display_member_cards(members_df):
-    """Display members as modern cards"""
+    """Displays member information cards with pagination and status indicators.
+
+    This function presents member details in a paginated card format, showing key information and activity status for each member. It handles missing data gracefully and provides navigation for large member lists.
+
+    Args:
+        members_df (pd.DataFrame): DataFrame containing member data.
+
+    Returns:
+        None
+    """
     if members_df.empty:
         st.warning("No members found in the system.")
         return
