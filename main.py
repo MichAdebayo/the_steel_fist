@@ -16,7 +16,13 @@ settings = st.Page("pages/settings.py", title="Settings", icon="⚙️") if st.s
 
 
 def login():
-    """Modern Login Page"""
+    """Displays the login page and handles user role selection.
+
+    This function presents the login interface, allowing users to select their role and enter the system. It configures the page, applies custom styling, and showcases platform features.
+
+    Returns:
+        None
+    """
     # Page configuration for login only
     st.set_page_config(
         page_title="Steel Fist Gym - Login",
@@ -102,7 +108,13 @@ def login():
         """, unsafe_allow_html=True)
 
 def handle_logout():
-    """Function to handle logout in sidebar"""
+    """Handles user logout and clears session state.
+
+    This function displays a logout button and, when clicked, clears all session state and reruns the app to return to the login page.
+
+    Returns:
+        None
+    """
     if st.button("🚪 Logout", use_container_width=True):
         # Clear all session state
         for key in list(st.session_state.keys()):
