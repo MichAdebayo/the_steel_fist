@@ -1,82 +1,174 @@
-# Gestion de la salle de sport Steel Fist
+<div align="center">
 
-Ce projet est une application de gestion de données pour une salle de sport, développée avec **SQLModel** pour la gestion des bases de données et **Streamlit** pour l'interface utilisateur. L'application offre différentes fonctionnalités en fonction des rôles des utilisateurs : **admin** ou **utilisateur standard**.
+<img src="assets/logo.png" alt="Steel Fist Logo" height="110" />
 
----
+# Steel Fist Gym Management Platform
 
-## Fonctionnalités
+Unified management & self‑service portal for a modern gym: members, coaches, courses, registrations & analytics — built with **Streamlit** + **SQLModel**.
 
-### Pour les Administrateurs :
-- **Gestion des Coachs** : Ajouter, modifier et supprimer des coachs.
-- **Gestion des Membres** : Ajouter, modifier et supprimer des membres.
-- **Gestion des Cours** : Ajouter, modifier et supprimer des cours disponibles dans la salle de sport.
+![App Screenshot](assets/app_screenshot.png)
 
-### Pour les Utilisateurs Standards :
-- **Inscription aux Cours** : S'inscrire aux cours proposés par la salle de sport.
-- **Consultation d'Historique** : Voir l'historique des cours auxquels ils se sont inscrits.
-
-### Authentification :
-- Fonctionnalité de **log-in** / **log-out**.
-- Gestion des droits d'accès selon le rôle (admin ou utilisateur standard).
+</div>
 
 ---
 
-## Installation
+## Overview
 
-1. **Cloner le dépôt Git**  
-   ```bash
-   git clone <lien_du_repo>
-   cd <nom_du_repo>
+Steel Fist is a lightweight, single‑page style multi‑section web app that centralises day‑to‑day gym operations:
 
-2. **Installer les dépendances**
-Assurez-vous d'avoir Python 3.8 ou une version ultérieure installée. Ensuite, exécutez :
-    ```bash
-    pip install -r requirements.txt
+- Admins curate coaches & courses, manage members and view live registration intelligence.
+- Members browse available classes, register, and review their enrolment history.
+- A consistent dark glass + accent UI with reusable card components improves readability and speed of use.
 
-3. **Lancer l'application**
-Démarrez le serveur Streamlit :
-    ```bash
-    streamlit run main.py
+The app emphasises: fast startup (SQLite + in‑process ORM), minimal config, idempotent seeded sample data (Faker), and clear role‑based navigation.
 
-4. **Configuration de la Base de Données**
+---
 
-L'application utilise SQLModel pour interagir avec la base de données. Voici quelques exemples de requêtes utilisées :
+## Key Features
 
-**Rechercher l'ID d'un membre par son nom :**
-    
-    statement = select(Members.member_id).where(Members.member_name == name)
-    name_id = session.exec(statement).first()
+### Admin
+- Coach management (create / update / delete)
+- Course catalogue management (capacity, schedule, coach assignment)
+- Member directory CRUD
+- Registration oversight & aggregated analytics (counts, trends)
+- Quick stats panel in sidebar
 
-**Compter les inscriptions d'un membre :**
-    
-    statementh = select(func.count(Registrations.registration_id)).where(Registrations.member_id == name_id)
+### Member
+- Browse & filter available courses
+- Register instantly (respecting capacity & duplicate guards)
+- View personal registration history
 
-**La structure de la base de données inclut les tables suivantes :**
+### Platform / UX
+- Role selection landing (header + sidebar hidden pre‑login for focus)
+- Dynamic navigation via Streamlit experimental `st.navigation` API
+- Unified typography & card styling (brand accent + glass panels)
+- Real logo asset (favicon + in‑app) replacing placeholder emojis
+- Responsive layout (wide mode) with adaptive metric cards
 
-    
-    Members : Liste des membres.
-    Accesscards : Liste des accès.
-    Coaches : Liste des coachs.
-    Courses : Liste des cours.
-    Registrations : Suivi des inscriptions aux cours.
+### Data Layer
+- **SQLModel** ORM over **SQLite** (`steel_fist.db`)
+- Entity relationships: Members ↔ Registrations ↔ Courses ↔ Coaches; Access Cards linked to Members
+- Faker‑powered idempotent seeding script with `--force` reset option
 
-## Contributions
+---
 
-Les contributions sont les bienvenues !
+## Architecture at a Glance
 
-Créez une issue pour signaler un bug ou proposer une nouvelle fonctionnalité.
-Soumettez une pull request après avoir testé vos modifications.
+```
+Streamlit (UI + Navigation)
+    │
+    ├── main.py (role gating, layout, sidebar, navigation)
+    ├── pages/ (feature pages: manage_* , course_registration, analytics)
+    ├── app_members.py (member registration workflow)
+    │
+    ├── styles.py (central CSS injection + components)
+    ├── model.py (SQLModel definitions)
+    ├── init_db.py (engine + table creation)
+    ├── populate_db.py (seed / demo data)
+    └── utils.py (helpers)
+```
 
-## Licence
+---
 
-Ce projet est sous licence MIT. Consultez le fichier LICENSE pour plus d'informations.
-Auteur
+## Getting Started
 
-Développé par 
-@MichAdebayo
-Michael Adebayo 
-et 
-@LudivineRB
-Ludivine Raby 🏋️‍♀️.
+### Prerequisites
+- Python 3.10+ (tested with 3.12)
+- pip / virtualenv (recommended)
 
+### Installation
+```bash
+git clone https://github.com/<your-org-or-user>/the_steel_fist.git
+cd the_steel_fist
+python -m venv .venv
+source .venv/bin/activate  # Windows: .venv\Scripts\activate
+pip install --upgrade pip
+pip install -r requirements.txt
+```
 
+### Initial Database Setup
+Tables are auto-created on first run (via `init_db.py`). To populate demo data:
+```bash
+python populate_db.py         # seed only if empty
+python populate_db.py --force # wipe & reseed
+```
+
+### Run the App
+```bash
+streamlit run main.py
+```
+Open the provided local URL (usually http://localhost:8501). Choose a role to enter the corresponding dashboard.
+
+---
+
+## Data Model Summary
+
+| Table          | Purpose                               | Notable Fields / Relations |
+|----------------|----------------------------------------|----------------------------|
+| Members        | Gym members                            | access_card_id, registrations |
+| Accesscards    | Physical / digital access credentials  | member_id (1‑to‑1)         |
+| Coaches        | Instructors                            | courses (1‑to‑many)        |
+| Courses        | Class offerings                        | coach_id, capacity         |
+| Registrations  | Member enrolments in courses           | member_id, course_id       |
+
+---
+
+## Seeding Logic (populate_db.py)
+Highlights:
+- Uses Faker for realistic names & schedules
+- Prevents duplicate seeding unless `--force` supplied
+- Ensures referential integrity (coaches before courses; members before registrations)
+- Randomised, bounded registration counts per member
+
+---
+
+## Styling System
+Central CSS injection (`styles.py`) defines:
+- Brand color variables (HSL accent)
+- Glass + elevated card patterns
+- Metric cards & feature cards
+- Scoped overrides (dataframe font scaling)
+
+Logo is embedded via base64 for reliable rendering inside custom Markdown blocks; favicon uses the asset path if available.
+
+---
+
+## Development Tips
+| Action | Command |
+|--------|---------|
+| Install deps | `pip install -r requirements.txt` |
+| Run app | `streamlit run main.py` |
+| Seed DB | `python populate_db.py` |
+| Force reseed | `python populate_db.py --force` |
+
+Logically dead / legacy files (e.g., backups) can be pruned once verified obsolete.
+
+---
+
+## Contributing
+1. Fork & create a feature branch: `git checkout -b feat/your-feature`  
+2. Commit with conventional messages (e.g. `feat: add course capacity validation`)  
+3. Open a Pull Request with context & screenshots  
+4. Ensure seeding + app run locally without errors
+
+Feel free to open issues for: bugs, UX polish, performance, test coverage.
+
+### Potential Roadmap
+- Authentication backend (real users instead of role selector)
+- Pagination & search across large member/course lists
+- Attendance tracking & no‑show metrics
+- Export analytics (CSV / PDF)
+- Automated tests (pytest + Streamlit component harness)
+
+---
+
+## License
+MIT — see `LICENSE` file (add one if missing).
+
+## Authors
+Michael Adebayo ([@MichAdebayo](https://github.com/MichAdebayo))  
+Ludivine Raby ([@LudivineRB](https://github.com/LudivineRB))
+
+---
+
+> Built for clarity, speed, and maintainability — contributions welcome.
