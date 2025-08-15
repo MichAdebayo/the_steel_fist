@@ -1,5 +1,4 @@
 import streamlit as st
-import datetime
 from utils import registrations, historic_number_registrations, historic_registrations
 from init_db import engine
 from sqlmodel import Session, select
@@ -40,7 +39,15 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 def courses_list():
-    """Get list of available courses with enhanced information"""
+    """
+    Retrieves and processes a list of available courses from the database.
+
+    This function queries the database to fetch all courses, calculates their current registration count, 
+    and determines their availability status. It returns a pandas DataFrame with comprehensive course information.
+
+    Returns:
+        pd.DataFrame: A DataFrame containing detailed information about each course.
+    """
     with Session(engine) as session:
         stmt = select(Courses)
         results = session.exec(stmt).all()
@@ -65,7 +72,16 @@ def courses_list():
         return df
 
 def display_course_cards(courses_df):
-    """Display courses as dark glass cards (aligned with other entity cards)."""
+    """Renders course information as interactive visual cards in a two-column layout.
+
+    This function takes a DataFrame of courses and displays each course as a visually appealing card. 
+    The cards show course details like name, coach ID, time plan, registration status, and capacity.
+
+    Args:
+        courses_df (pd.DataFrame): A DataFrame containing course information with columns 
+                                   including course_name, coach_id, time_plan, current_registrations, 
+                                   max_capacity, and availability.
+    """
     if courses_df.empty:
         st.warning("No courses available at the moment.")
         return
@@ -112,7 +128,18 @@ def display_course_cards(courses_df):
             """, unsafe_allow_html=True)
 
 def create_registration_history_chart(registrations_data):
-    """Create a chart showing registration history"""
+    """Creates a line chart visualizing monthly registration activity.
+
+    This function processes registration data to generate a monthly trend chart of registrations. 
+    It converts registration dates to a monthly format and plots the number of registrations per month.
+
+    Args:
+        registrations_data (list): A list of registration objects containing registration dates and course IDs.
+
+    Returns:
+        plotly.graph_objs._figure.Figure or None: A Plotly line chart showing registration trends, 
+        or None if no registration data is available.
+    """
     if not registrations_data:
         return None
     
