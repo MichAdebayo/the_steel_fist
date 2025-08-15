@@ -14,7 +14,6 @@ from __future__ import annotations
 import argparse
 import random
 from datetime import datetime, timedelta, timezone
-from typing import Iterable
 
 from faker import Faker
 from sqlalchemy.exc import IntegrityError

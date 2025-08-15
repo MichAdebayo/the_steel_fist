@@ -1,5 +1,4 @@
 import streamlit as st
-import datetime
 from styles import apply_custom_css, create_welcome_card
 
 # Initialize session state for role

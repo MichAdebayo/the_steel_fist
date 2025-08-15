@@ -2,12 +2,12 @@ import streamlit as st
 import datetime
 from utils import registrations, historic_number_registrations, historic_registrations
 from init_db import engine
-from sqlmodel import Session, select, func
+from sqlmodel import Session, select
 import pandas as pd
 from model import Courses, Registrations
 from styles import apply_custom_css, create_welcome_card, create_metric_card, create_section_header
 import plotly.express as px
-import plotly.graph_objects as go
+
 
 # Apply styling
 apply_custom_css()
