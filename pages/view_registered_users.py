@@ -1,9 +1,9 @@
 # Modern Registration Overview Page
 import streamlit as st
 from init_db import engine
-from sqlmodel import Session, select, func
-from model import Members, Coaches, Registrations, Courses
-from styles import apply_custom_css, create_welcome_card, create_metric_card, create_section_header
+from sqlmodel import Session, select
+from model import Members, Registrations, Courses
+from styles import apply_custom_css, create_welcome_card, create_section_header
 import pandas as pd
 import plotly.express as px
 
@@ -11,7 +11,15 @@ import plotly.express as px
 apply_custom_css()
 
 def get_registration_data():
-    """Get comprehensive registration data with member and course details"""
+    """Retrieves and consolidates registration data from the database.
+
+    This function fetches all registrations and enriches them with member and course details.
+    It creates a comprehensive DataFrame containing registration information including 
+    member names, emails, course details, and registration dates.
+
+    Returns:
+        pd.DataFrame: A DataFrame containing detailed registration information.
+    """
     with Session(engine) as session:
         # Get all registrations first
         registrations = session.exec(select(Registrations)).all()
