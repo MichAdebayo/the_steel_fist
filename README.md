@@ -103,13 +103,13 @@ Open the provided local URL (usually http://localhost:8501). Choose a role to en
 
 ## Data Model Summary
 
-| Table          | Purpose                               | Notable Fields / Relations |
-|----------------|----------------------------------------|----------------------------|
-| Members        | Gym members                            | access_card_id, registrations |
-| Accesscards    | Physical / digital access credentials  | member_id (1‑to‑1)         |
-| Coaches        | Instructors                            | courses (1‑to‑many)        |
-| Courses        | Class offerings                        | coach_id, capacity         |
-| Registrations  | Member enrolments in courses           | member_id, course_id       |
+| Table         | Purpose                               |
+|---------------|----------------------------------------|
+| Members       | Gym members                            |
+| Accesscards   | Physical / digital access credentials  |
+| Coaches       | Instructors                            |
+| Courses       | Class offerings                        |
+| Registrations | Member enrolments in courses           |
 
 ---
 
@@ -163,7 +163,7 @@ Feel free to open issues for: bugs, UX polish, performance, test coverage.
 ---
 
 ## License
-MIT — see `LICENSE` file (add one if missing).
+The project is licensed under the MIT license.
 
 ## Authors
 Michael Adebayo ([@MichAdebayo](https://github.com/MichAdebayo))  
