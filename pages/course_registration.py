@@ -5,18 +5,23 @@ st.write("This is the course registration page.")
 # Modern Course Registration Page
 import streamlit as st
 from init_db import engine
-from sqlmodel import Session, select, func
-from model import Members, Coaches, Registrations, Courses
+from sqlmodel import Session, select
+from model import Coaches, Registrations, Courses
 from styles import apply_custom_css, create_welcome_card, create_section_header
 import pandas as pd
-import plotly.express as px
-from datetime import datetime
+
 
 # Apply modern styling
 apply_custom_css()
 
 def get_available_courses():
-    """Get all available courses with coach information"""
+    """Retrieves a list of available courses with coach and registration details.
+
+    This function returns a DataFrame containing all courses, including coach information, participant counts, and availability status. It is used to display courses for registration.
+
+    Returns:
+        pd.DataFrame: DataFrame with course details, coach info, participant statistics, and availability.
+    """
     with Session(engine) as session:
         # Get all courses first
         courses = session.exec(select(Courses)).all()
@@ -49,7 +54,16 @@ def get_available_courses():
         return pd.DataFrame(data)
 
 def display_course_browser(courses_df):
-    """Display courses with unified dark glass styling and minimal icons."""
+    """Displays a browser for available courses with filtering and registration options.
+
+    This function presents available courses in a card format, allowing users to filter, sort, and register for courses. It handles empty and filtered data gracefully and provides interactive registration buttons.
+
+    Args:
+        courses_df (pd.DataFrame): DataFrame containing available course data.
+
+    Returns:
+        None
+    """
     if courses_df.empty:
         st.warning("No courses available at the moment. Please check back later!")
         return
