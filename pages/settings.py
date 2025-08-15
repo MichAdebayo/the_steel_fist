@@ -1,6 +1,6 @@
 # Modern Settings Page
 import streamlit as st
-from styles import apply_custom_css, create_welcome_card, create_metric_card, create_section_header
+from styles import apply_custom_css, create_welcome_card, create_section_header
 
 # Apply modern styling
 apply_custom_css()
