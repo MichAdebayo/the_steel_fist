@@ -1,10 +1,39 @@
 import streamlit as st
 from styles import apply_custom_css, create_welcome_card
+from pathlib import Path
+import base64
+
+# Resolve logo path (try assets/ then images/) so favicon & inline image both work.
+def _resolve_logo_path():
+    base_dir = Path(__file__).parent
+    candidates = [base_dir / "assets" / "logo.png", base_dir / "images" / "logo.png"]
+    for p in candidates:
+        if p.exists():
+            return p
+    return None
+
+_LOGO_PATH = _resolve_logo_path()
+
+# Load logo as base64 once so it can be inlined in HTML (works reliably inside custom markdown blocks)
+def _load_logo_b64():
+    if not _LOGO_PATH:
+        return ""
+    try:
+        with open(_LOGO_PATH, "rb") as f:
+            return base64.b64encode(f.read()).decode()
+    except Exception:
+        return ""
+
+_LOGO_B64 = _load_logo_b64()
+LOGO_HTML = (
+    f'<img src="data:image/png;base64,{_LOGO_B64}" style="height:70px; object-fit:contain; display:inline-block;" alt="Steel Fist Logo" />'
+    if _LOGO_B64 else "<strong>The Steel Fist</strong>"
+)
 
 # Global page config (set once) - avoids multiple calls error and ensures header visible for navigation
 st.set_page_config(
     page_title="Steel Fist Gym",
-    page_icon="🏋️‍♂️",
+    page_icon=str(_LOGO_PATH) if _LOGO_PATH else "🏋️‍♂️",
     layout="wide",
     initial_sidebar_state="collapsed"
 )
@@ -46,12 +75,11 @@ def login():
     """, unsafe_allow_html=True)
     
     # Header with gym branding
-    st.markdown("""
-    <div class="main-header">
-        <div style="display: flex; align-items: center; justify-content: center;">
-            <h1 style="color: var(--brand-primary); margin: 0; font-size: 2.5rem; font-weight: 700;">
-                🏋️‍♂️ Steel Fist Gym
-            </h1>
+    st.markdown(f"""
+    <div class="main-header" style="text-align:center;">
+        <div style="display:flex; flex-direction:row; align-items:center; justify-content:center; gap:1rem;">
+            {LOGO_HTML}
+            <h1 style="color: var(--brand-primary); margin:0; font-size:2.5rem; font-weight:700;">Steel Fist Gym</h1>
         </div>
     </div>
     """, unsafe_allow_html=True)
@@ -163,10 +191,10 @@ else:
         
         # Custom sidebar content
         with st.sidebar:
-            st.markdown("""
-            <div class="brand-block">
-                <h2>🏋️‍♂️ Steel Fist</h2>
-                <p>Admin Dashboard</p>
+            st.markdown(f"""
+            <div class="brand-block" style="text-align:center;">
+                {LOGO_HTML}
+                <p style="margin-top:0.35rem;">Admin Dashboard</p>
             </div>
             """, unsafe_allow_html=True)
             
@@ -217,10 +245,10 @@ else:
         
         # Custom sidebar content
         with st.sidebar:
-            st.markdown("""
-            <div class="brand-block">
-                <h2>🏋️‍♂️ Steel Fist</h2>
-                <p>Member Portal</p>
+            st.markdown(f"""
+            <div class="brand-block" style="text-align:center;">
+                {LOGO_HTML}
+                <p style="margin-top:0.35rem;">Member Portal</p>
             </div>
             """, unsafe_allow_html=True)
             
