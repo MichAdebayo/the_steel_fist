@@ -1,21 +1,25 @@
 # Modern Course Management Interface
 import streamlit as st
 from init_db import engine
-from sqlmodel import Session, select, func
-from model import Members, Coaches, Accesscards, Registrations, Courses
-from utils import add_member, select_course, add_course, delete_course, delete_member, update_members
+from sqlmodel import Session, select
+from model import Coaches, Registrations, Courses
+from utils import add_course, delete_course
 import pandas as pd
-import datetime
-from styles import apply_custom_css, create_welcome_card, create_metric_card, create_section_header
+from styles import apply_custom_css, create_welcome_card
 import plotly.express as px
-import plotly.graph_objects as go
-from datetime import datetime, time
+from datetime import time
 
 # Apply modern styling
 apply_custom_css()
 
 def course_list():
-    """Get enhanced course list with additional statistics"""
+    """Retrieves a list of courses with coach and participant details.
+
+    This function returns a DataFrame containing all courses, including coach information and participant counts. It is used to display and manage course data in the application.
+
+    Returns:
+        pd.DataFrame: DataFrame with course details, coach info, and participant statistics.
+    """
     with Session(engine) as session:
         stmt = select(Courses)
         results = session.exec(stmt).all()
@@ -49,7 +53,16 @@ def course_list():
         return pd.DataFrame(data)
 
 def create_course_analytics(courses_df):
-    """Create analytics charts for courses (updated sizes & axis labels)."""
+    """Generates analytics charts for course popularity and status distribution.
+
+    This function creates visualizations for the most popular courses and the distribution of course statuses. It returns two Plotly figures or None if the input data is empty.
+
+    Args:
+        courses_df (pd.DataFrame): DataFrame containing course data.
+
+    Returns:
+        tuple: (fig1, fig2) where fig1 is a bar chart of course popularity and fig2 is a pie chart of course status distribution. Returns (None, None) if input is empty.
+    """
     if courses_df.empty:
         return None, None
 
@@ -100,7 +113,16 @@ def create_course_analytics(courses_df):
     return fig1, fig2
 
 def display_course_cards(courses_df):
-    """Display courses as modern cards"""
+    """Displays course information cards with pagination and status indicators.
+
+    This function presents course details in a paginated card format, showing key information and activity status for each course. It handles missing data gracefully and provides navigation for large course lists.
+
+    Args:
+        courses_df (pd.DataFrame): DataFrame containing course data.
+
+    Returns:
+        None
+    """
     if courses_df.empty:
         st.warning("No courses found in the system.")
         return
@@ -180,7 +202,13 @@ def display_course_cards(courses_df):
             """, unsafe_allow_html=True)
 
 def get_coaches_list():
-    """Get list of available coaches"""
+    """Retrieves a dictionary of available coaches for selection.
+
+    This function returns a dictionary mapping coach display names to their unique IDs, used for assigning coaches to courses.
+
+    Returns:
+        dict: Dictionary with coach display names as keys and coach IDs as values.
+    """
     with Session(engine) as session:
         coaches = session.exec(select(Coaches)).all()
         return {f"{coach.coach_name} ({coach.specialty})": coach.coach_id for coach in coaches}
