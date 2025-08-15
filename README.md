@@ -1,10 +1,15 @@
 <div align="center">
 
-<img src="assets/logo.png" alt="Steel Fist Logo" height="110" />
+<h1 style="display:flex; align-items:center; justify-content:center; gap:0.8rem; margin:0; padding:0; font-size:2.4rem;">
+    <img src="assets/logo.png" alt="Steel Fist Logo" height="82" style="margin:0;" />
+    <span>Steel Fist Gym Management Platform</span>
+</h1>
 
-# Steel Fist Gym Management Platform
+<p style="max-width:860px; margin:0.75rem auto 0; font-size:1.05rem; line-height:1.45;">
+Unified management & self‑service portal for a modern gym: members, coaches, courses, registrations & analytics — built with <strong>Streamlit</strong> + <strong>SQLModel</strong>.
+</p>
 
-Unified management & self‑service portal for a modern gym: members, coaches, courses, registrations & analytics — built with **Streamlit** + **SQLModel**.
+<br/>
 
 ![App Screenshot](assets/app_screenshot.png)
 
